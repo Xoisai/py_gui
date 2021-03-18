@@ -1,0 +1,116 @@
+#:import Factory kivy.factory.Factory
+
+# - - - - - - - - - Graphics - - - - - - - - -
+
+<Button>:
+    font_size: 40
+    color: 0.1, 0.5, 0.6, 1
+    size_hint: 0.2, 0.25
+
+# - - - - - - - - - DYNAMIC CLASSES - - - - - - - - -
+
+# Navigation
+<NavPane@FloatLayout>:
+    size_hint: 0.1, 1.0
+
+<NavGrid@GridLayout>:
+    size_hint: 1.0, 0.6
+    pos_hint: {"y": 0.2}
+    spacing: [20, 20]
+    padding: 20
+    cols: 1
+
+<HomeBtn@Button>:
+    text: "Home"
+
+<BackBtn@Button>:
+    text: "Back"
+
+# New project popup form
+<NewProjectPopup>:
+    auto_dismiss: True
+    size_hint: 0.5, 0.5
+    pos_hint: {"x": 0.25, "y": 0.25}
+    title: "New Project"
+    project_name: project_name_input.text
+
+    BoxLayout:
+        size: root.size
+        orientation: "vertical"
+        TextInput:
+            id: project_name_input
+            size_hint: 1.0, 0.1
+            multiline: False
+            hint_text: "Project Name"
+
+        Button:
+            size_hint: 1.0, 0.1
+            text: "Add Project"
+            on_release: root.enter()
+
+# - - - - - - - - - PAGES - - - - - - - - -
+
+<HomePage>:
+    FloatLayout:
+        size: root.width, root.height
+
+        GridLayout:
+            pos_hint: {"x": 0.2, "y": 0.35}
+            size_hint: 0.6, 0.3
+            spacing: [20, 20]
+            cols: 3
+            Button:
+                text: "New Capture"
+                on_release: root.new_cap_btn()
+
+            Button:
+                text: "Project Browser"
+                on_release: root.p_browse_btn()
+
+            Button:
+                text: "Settings"
+                on_release: root.settings_btn()
+
+<NewCapPage>:
+    FloatLayout:
+        size: root.width, root.height
+
+        NavPane:
+            NavGrid:
+                HomeBtn:
+                    on_release: root.home_btn()
+                BackBtn:
+                    on_release: root.back_btn()
+
+        Label:
+            text: "NEW CAPTURE PAGE"
+
+
+<ProjectBrowserPage>:
+    FloatLayout:
+        size: root.width, root.height
+
+        NavPane:
+            NavGrid:
+                HomeBtn:
+                    on_release: root.home_btn()
+                BackBtn:
+                    on_release: root.back_btn()
+
+        Button:
+            pos_hint: {"x": 0.6, "y": 0.5}
+            size_hint: 0.1, 0.1
+            text: "Add Project"
+            on_release: root.add_project()
+            # on_release: Factory.NewProjectPopup().open()
+
+        Label:
+            text: "PROJECT BROWSER PAGE"
+
+
+<SettingsPage>:
+    FloatLayout:
+        size: root.width, root.height
+
+        Label:
+            text: "SETTINGS PAGE"
