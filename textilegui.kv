@@ -29,13 +29,15 @@
 # New project popup form
 <NewProjectPopup>:
     auto_dismiss: True
-    size_hint: 0.5, 0.5
-    pos_hint: {"x": 0.25, "y": 0.25}
+    size_hint: 0.5, 0.25
+    pos_hint: {"x": 0.25, "y": 0.4}
     title: "New Project"
     project_name: project_name_input.text
 
     BoxLayout:
         size: root.size
+        padding: 10
+        spacing: 20
         orientation: "vertical"
         TextInput:
             id: project_name_input
