@@ -1,3 +1,6 @@
+
+# - - - - - - - - Project Browser - - - - - - - -
+
 # New project popup form
 <NewProjectPopup>:
     auto_dismiss: True
@@ -35,12 +38,36 @@
                 BackBtn:
                     on_release: root.back_btn()
 
+        ScrollView:
+            size_hint: 0.6, 0.5
+            pos_hint: {"x": 0.2, "y": 0.25}
+            do_scroll_x: False
+            do_scroll_y: True
+
+            GridLayout:
+                id: p_btn_grid
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: 60
+                spacing: 20
+                cols: 1
+
         Button:
-            pos_hint: {"x": 0.6, "y": 0.5}
-            size_hint: 0.1, 0.1
+            pos_hint: {"x": 0.45, "y": 0.1}
+            size_hint: 0.15, 0.1
             text: "Add Project"
             on_release: root.add_project()
-            # on_release: Factory.NewProjectPopup().open()
 
         Label:
+            # pos_hint: {"x":0.1, "y": 0.8}
             text: "PROJECT BROWSER PAGE"
+
+# - - - - - - - - Project View - - - - - - - -
+
+<ProjectViewPage>:
+    FloatLayout:
+        size: root.width, root.height
+
+        Label:
+            # pos_hint: {"x":0.1, "y": 0.8}
+            text: "PROJECT VIEW PAGE"

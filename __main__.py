@@ -34,19 +34,6 @@ class NewCapPage(Screen):
         print("NEW CAP BACK CLICKED")
 
 
-class ProjectBrowserPage(Screen):
-
-    def home_btn(self):
-        app.sm.current = "Home"
-
-    def back_btn(self):
-        print("PROJECT BROWSE BACK CLICKED")
-
-    def add_project(self):
-        self.popup = browser.NewProjectPopup()
-        self.popup.open()
-
-
 class SettingsPage(Screen):
     pass
 
@@ -61,7 +48,8 @@ class TextileGui(App):
         # Add screens to project
         self.sm.add_widget(HomePage(name="Home"))
         self.sm.add_widget(NewCapPage(name="New Capture"))
-        self.sm.add_widget(ProjectBrowserPage(name="Project Browser"))
+        self.sm.add_widget(browser.ProjectBrowserPage(name="Project Browser"))
+        self.sm.add_widget(browser.ProjectViewPage(name="Project View"))
         self.sm.add_widget(SettingsPage(name="Settings"))
 
         return self.sm
