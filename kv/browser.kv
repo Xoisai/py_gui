@@ -1,0 +1,46 @@
+# New project popup form
+<NewProjectPopup>:
+    auto_dismiss: True
+    size_hint: 0.5, 0.25
+    pos_hint: {"x": 0.25, "y": 0.4}
+    title: "New Project"
+    project_name: project_name_input.text
+
+    BoxLayout:
+        size: root.size
+        padding: 10
+        spacing: 20
+        orientation: "vertical"
+        TextInput:
+            id: project_name_input
+            halign: "center"
+            valign: "middle"
+            size_hint: 1.0, 0.1
+            multiline: False
+            hint_text: "Project Name"
+
+        Button:
+            size_hint: 1.0, 0.1
+            text: "Add Project"
+            on_release: root.enter()
+
+<ProjectBrowserPage>:
+    FloatLayout:
+        size: root.width, root.height
+
+        NavPane:
+            NavGrid:
+                HomeBtn:
+                    on_release: root.home_btn()
+                BackBtn:
+                    on_release: root.back_btn()
+
+        Button:
+            pos_hint: {"x": 0.6, "y": 0.5}
+            size_hint: 0.1, 0.1
+            text: "Add Project"
+            on_release: root.add_project()
+            # on_release: Factory.NewProjectPopup().open()
+
+        Label:
+            text: "PROJECT BROWSER PAGE"

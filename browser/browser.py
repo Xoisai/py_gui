@@ -15,7 +15,6 @@ class NewProjectPopup(Popup):
         super(NewProjectPopup, self).__init__(**kwargs)
 
     def enter(self):
-        print(F"Project name input is {self.project_name}")
         add_project_dir(self.project_name)
         self.dismiss()
 

@@ -1,9 +1,16 @@
 from tex_py_gui.config import DirConfig  # noqa: F401
+import os
 import kivy
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from tex_py_gui.browser import browser
+from kivy.lang import Builder
 kivy.require("2.0.0")
+
+# Load in kivy design files
+for filename in os.listdir(DirConfig.kv_dir):
+    if filename.endswith(".kv"):
+        Builder.load_file(F"{DirConfig.kv_dir}{filename}")
 
 
 class HomePage(Screen):

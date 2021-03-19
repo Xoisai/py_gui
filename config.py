@@ -11,3 +11,4 @@ Config.set("graphics", "height", "600")
 class DirConfig():
 
     project_dir = BASEDIR + "/projects/"
+    kv_dir = BASEDIR + "/kv/"
