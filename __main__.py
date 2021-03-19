@@ -4,6 +4,7 @@ import kivy
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from tex_py_gui.browser import browser
+from tex_py_gui.capture import capture
 from kivy.lang import Builder
 kivy.require("2.0.0")
 
@@ -25,15 +26,6 @@ class HomePage(Screen):
         app.sm.current = "Settings"
 
 
-class NewCapPage(Screen):
-
-    def home_btn(self):
-        app.sm.current = "Home"
-
-    def back_btn(self):
-        print("NEW CAP BACK CLICKED")
-
-
 class SettingsPage(Screen):
     pass
 
@@ -47,7 +39,7 @@ class TextileGui(App):
 
         # Add screens to project
         self.sm.add_widget(HomePage(name="Home"))
-        self.sm.add_widget(NewCapPage(name="New Capture"))
+        self.sm.add_widget(capture.NewCapPage(name="New Capture"))
         self.sm.add_widget(browser.ProjectBrowserPage(name="Project Browser"))
         self.sm.add_widget(browser.ProjectViewPage(name="Project View"))
         self.sm.add_widget(SettingsPage(name="Settings"))

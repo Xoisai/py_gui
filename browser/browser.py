@@ -1,17 +1,18 @@
 import os
+from kivy.app import App
 from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
 from kivy.uix.button import Button
 from kivy.properties import ObjectProperty
 from tex_py_gui.config import DirConfig
-from kivy.app import App
+from tex_py_gui import widgets
 
 
 class ProjectBrowserPage(Screen):
 
     def __init__(self, **kwargs):
         super(ProjectBrowserPage, self).__init__(**kwargs)
-        self.p_btn_scroll = None
+        self.add_widget(widgets.NavBar())
         self.list_projects()
 
     def home_btn(self):
@@ -40,10 +41,9 @@ class ProjectBrowserPage(Screen):
 
     def p_btn_click(self, instance):
         p_selection = instance.text
-        browse_scr = App.get_running_app().sm.get_screen("Project View")
-        browse_scr.set_project(p_selection)
+        view_scr = App.get_running_app().sm.get_screen("Project View")
+        view_scr.set_project(p_selection)
         App.get_running_app().sm.current = "Project View"
-
 
 
 class NewProjectPopup(Popup):

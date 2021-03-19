@@ -1,0 +1,37 @@
+# Navigation
+<NavPane@FloatLayout>:
+    size_hint: 0.1, 1.0
+
+<NavGrid@GridLayout>:
+    size_hint: 1.0, 0.6
+    pos_hint: {"y": 0.2}
+    spacing: [20, 20]
+    padding: 20
+    cols: 1
+
+<HomeBtn@Button>:
+    text: "Home"
+
+<BackBtn@Button>:
+    text: "Back"
+
+
+# Navigation
+<NavBar>:
+    FloatLayout:
+        size_hint: 0.1, 1.0
+
+        GridLayout:
+            size_hint: 1.0, 0.6
+            pos_hint: {"y": 0.2}
+            spacing: [20, 20]
+            padding: 20
+            cols: 1
+
+            Button:
+                text: "Home"
+                on_release: root.parent.home_btn()
+
+            Button:
+                text: "Back"
+                on_release: root.parent.back_btn()
