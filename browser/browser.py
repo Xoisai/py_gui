@@ -39,7 +39,11 @@ class ProjectBrowserPage(Screen):
             self.ids.p_btn_grid.add_widget(btn)
 
     def p_btn_click(self, instance):
+        p_selection = instance.text
+        browse_scr = App.get_running_app().sm.get_screen("Project View")
+        browse_scr.set_project(p_selection)
         App.get_running_app().sm.current = "Project View"
+
 
 
 class NewProjectPopup(Popup):
@@ -54,24 +58,32 @@ class NewProjectPopup(Popup):
         super(NewProjectPopup, self).__init__(**kwargs)
 
     def enter(self):
-        add_project_dir(self.project_name)
+        self.add_project_dir(self.project_name)
         self.holder.list_projects()
         self.dismiss()
 
-
-def add_project_dir(p_name):
-    """
-    Add a project directory to main data dir.
-    """
-    dir_path = F"{DirConfig.project_dir}{p_name}"
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path)
+    def add_project_dir(self, p_name):
+        """
+        Add a project directory to main data dir.
+        """
+        dir_path = F"{DirConfig.project_dir}{p_name}"
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
 
 
 class ProjectViewPage(Screen):
 
     def __init__(self, **kwargs):
         super(ProjectViewPage, self).__init__(**kwargs)
+
+    def set_project(self, p_name):
+        """
+        Function called before transitioning to the project view page. Assigns
+        relevant values to the screen, specific to the selected project.
+        """
+        self.p_name = p_name
+        self.ids.p_name_lbl.text = self.p_name
+        self.project_dir = F"{DirConfig.project_dir}{p_name}"
 
     def home_btn(self):
         App.get_running_app().sm.current = "Home"
