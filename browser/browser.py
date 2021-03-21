@@ -9,6 +9,11 @@ from tex_py_gui import widgets
 
 
 class ProjectBrowserPage(Screen):
+    """
+    Ref: "Project Browser"
+
+    Project browser screen listing all current projects.
+    """
 
     def __init__(self, **kwargs):
         super(ProjectBrowserPage, self).__init__(**kwargs)
@@ -19,7 +24,7 @@ class ProjectBrowserPage(Screen):
         App.get_running_app().sm.current = "Home"
 
     def back_btn(self):
-        print("PROJECT BROWSE BACK CLICKED")
+        App.get_running_app().sm.current = "Home"
 
     def add_project(self):
         self.popup = NewProjectPopup(self)
@@ -75,6 +80,13 @@ class ProjectViewPage(Screen):
 
     def __init__(self, **kwargs):
         super(ProjectViewPage, self).__init__(**kwargs)
+        self.add_widget(widgets.NavBar())
+
+    def home_btn(self):
+        App.get_running_app().sm.current = "Home"
+
+    def back_btn(self):
+        App.get_running_app().sm.current = "Home"
 
     def set_project(self, p_name):
         """
@@ -84,6 +96,3 @@ class ProjectViewPage(Screen):
         self.p_name = p_name
         self.ids.p_name_lbl.text = self.p_name
         self.project_dir = F"{DirConfig.project_dir}{p_name}"
-
-    def home_btn(self):
-        App.get_running_app().sm.current = "Home"

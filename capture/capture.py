@@ -4,6 +4,11 @@ from tex_py_gui import widgets
 
 
 class NewCapPage(Screen):
+    """
+    Ref: "New Capture"
+
+    Page to handle capture of new sample image.
+    """
 
     def __init__(self, **kwargs):
         super(NewCapPage, self).__init__(**kwargs)
@@ -13,4 +18,4 @@ class NewCapPage(Screen):
         App.get_running_app().sm.current = "Home"
 
     def back_btn(self):
-        print("NEW CAP BACK CLICKED")
+        App.get_running_app().sm.current = "Home"
