@@ -1,20 +1,4 @@
-# Navigation
-<NavPane@FloatLayout>:
-    size_hint: 0.1, 1.0
-
-<NavGrid@GridLayout>:
-    size_hint: 1.0, 0.6
-    pos_hint: {"y": 0.2}
-    spacing: [20, 20]
-    padding: 20
-    cols: 1
-
-<HomeBtn@Button>:
-    text: "Home"
-
-<BackBtn@Button>:
-    text: "Back"
-
+#:import SlideTransition kivy.uix.screenmanager.SlideTransition
 
 # Navigation
 <NavBar>:
@@ -30,8 +14,14 @@
 
             Button:
                 text: "Home"
-                on_release: root.parent.home_btn()
+                on_release:
+                    app.root.transition = SlideTransition(direction="right")
+                    root.parent.home_btn()
+                    app.root.transition = SlideTransition(direction="left")
 
             Button:
                 text: "Back"
-                on_release: root.parent.back_btn()
+                on_release:
+                    app.root.transition = SlideTransition(direction="right")
+                    root.parent.back_btn()
+                    app.root.transition = SlideTransition(direction="left")
