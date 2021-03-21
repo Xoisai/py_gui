@@ -1,0 +1,4 @@
+The Icons used are sourced from Google material IO icons pack, free to use
+online through the following link:
+
+  https://material.io/resources/icons/?style=baseline

@@ -7,22 +7,29 @@
 
         GridLayout:
             size_hint: 1.0, 0.6
-            pos_hint: {"y": 0.2}
+            pos_hint: {"center_y": 0.5}
             spacing: [20, 20]
             padding: 20
             cols: 1
 
             Button:
-                text: "Home"
-                source: "outline_home_white_48dp.png"
+                size_hint: 1.0, 0.15
                 on_release:
                     app.root.transition = SlideTransition(direction="right")
                     root.parent.home_btn()
                     app.root.transition = SlideTransition(direction="left")
+                Image:
+                    source: "static/icons/outline_home_white_48dp.png"
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
 
             Button:
-                text: "Back"
+                size_hint: 1.0, 0.15
                 on_release:
                     app.root.transition = SlideTransition(direction="right")
                     root.parent.back_btn()
                     app.root.transition = SlideTransition(direction="left")
+                Image:
+                    source: "static/icons/outline_arrow_back_white_48dp.png"
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
