@@ -72,7 +72,7 @@ class NewProjectPopup(Popup):
         """
         Add a project directory to main data dir.
         """
-        project = data_models.Project(p_name)
+        project = data_models.Project(name=p_name)
 
 
 class ProjectViewPage(Screen):
@@ -92,7 +92,8 @@ class ProjectViewPage(Screen):
         Function called before transitioning to the project view page. Assigns
         relevant values to the screen, specific to the selected project.
         """
-        self.p_name = p_name
-        self.ids.page_title.text = F"Project {self.p_name}"
-        self.ids.p_name_lbl.text = self.p_name
-        self.project_dir = F"{DirConfig.project_dir}{p_name}"
+        # self.p_name = p_name
+        json_path = F"{DirConfig.project_dir}{p_name}/{p_name}.json"
+        self.project = data_models.Project(json_path=json_path)
+        self.ids.page_title.text = F"Project {self.project.name}"
+        self.ids.p_name_lbl.text = self.project.name
