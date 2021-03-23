@@ -6,6 +6,7 @@ from kivy.uix.button import Button
 from kivy.properties import ObjectProperty
 from tex_py_gui.config import DirConfig
 from tex_py_gui import widgets
+from tex_py_gui.data import data_models
 
 
 class ProjectBrowserPage(Screen):
@@ -63,17 +64,15 @@ class NewProjectPopup(Popup):
         super(NewProjectPopup, self).__init__(**kwargs)
 
     def enter(self):
-        self.add_project_dir(self.project_name)
+        self.add_project(self.project_name)
         self.holder.list_projects()
         self.dismiss()
 
-    def add_project_dir(self, p_name):
+    def add_project(self, p_name):
         """
         Add a project directory to main data dir.
         """
-        dir_path = F"{DirConfig.project_dir}{p_name}"
-        if not os.path.exists(dir_path):
-            os.makedirs(dir_path)
+        project = data_models.Project(p_name)
 
 
 class ProjectViewPage(Screen):
