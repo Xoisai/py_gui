@@ -96,4 +96,3 @@ class ProjectViewPage(Screen):
         json_path = F"{DirConfig.project_dir}{p_name}/{p_name}.json"
         self.project = data_models.Project(json_path=json_path)
         self.ids.page_title.text = F"Project {self.project.name}"
-        self.ids.p_name_lbl.text = self.project.name
