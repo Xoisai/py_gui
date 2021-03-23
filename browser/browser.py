@@ -94,5 +94,6 @@ class ProjectViewPage(Screen):
         relevant values to the screen, specific to the selected project.
         """
         self.p_name = p_name
+        self.ids.page_title.text = F"Project {self.p_name}"
         self.ids.p_name_lbl.text = self.p_name
         self.project_dir = F"{DirConfig.project_dir}{p_name}"

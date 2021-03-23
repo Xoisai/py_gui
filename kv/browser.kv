@@ -31,6 +31,9 @@
     FloatLayout:
         size: root.width, root.height
 
+        PageTitle:
+            text: "Project Browser"
+
         ScrollView:
             size_hint: 0.6, 0.5
             pos_hint: {"x": 0.2, "y": 0.25}
@@ -51,16 +54,15 @@
             text: "Add Project"
             on_release: root.add_project()
 
-        Label:
-            # pos_hint: {"x":0.1, "y": 0.8}
-            text: "PROJECT BROWSER PAGE"
-
 # - - - - - - - - Project View - - - - - - - -
 
 <ProjectViewPage>:
 
     FloatLayout:
         size: root.width, root.height
+
+        PageTitle:
+            id: page_title
 
         Label:
             id: p_name_lbl
