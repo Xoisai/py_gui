@@ -10,17 +10,30 @@
             size_hint: 0.6, 0.3
             spacing: [20, 20]
             cols: 3
-            Button:
+            SymbolButton:
                 text: "New Capture"
                 on_release: root.new_cap_btn()
+                Image:
+                    source: "static/icons/baseline_camera_alt_white_48dp.png"
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
 
-            Button:
+            SymbolButton:
                 text: "Project Browser"
                 on_release: root.p_browse_btn()
+                Image:
+                    source: "static/icons/baseline_folder_white_48dp.png"
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
 
-            Button:
+            SymbolButton:
                 text: "Settings"
                 on_release: root.settings_btn()
+                Image:
+                    source: "static/icons/baseline_settings_white_48dp.png"
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
+
 
 
 <SettingsPage>:
