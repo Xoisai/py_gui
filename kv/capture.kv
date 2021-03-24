@@ -94,3 +94,25 @@
                         source: "static/icons/baseline_autorenew_white_48dp.png"
                         center_x: self.parent.center_x
                         center_y: self.parent.center_y
+
+# New project popup form
+<AnalysisQuitPopup>:
+    auto_dismiss: True
+    size_hint: 0.5, 0.25
+    pos_hint: {"x": 0.25, "y": 0.4}
+    title: "The current sample date will be deleted. Are you sure?"
+
+    GridLayout:
+        cols: 2
+
+        Button:
+            text: "Yes"
+            on_release:
+                app.root.transition = SlideTransition(direction="right")
+                root.dismiss()
+                root.enter()
+                app.root.transition = SlideTransition(direction="left")
+
+        Button:
+            text: "No"
+            on_release: root.dismiss()

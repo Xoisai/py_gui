@@ -1,5 +1,7 @@
+import os
 from datetime import datetime
 from kivy.uix.screenmanager import Screen
+from kivy.uix.popup import Popup
 from kivy.app import App
 from tex_py_gui import widgets
 from tex_py_gui.config import DirConfig
@@ -49,10 +51,16 @@ class AnalysisPage(Screen):
         self.add_widget(widgets.NavBar())
 
     def home_btn(self):
-        App.get_running_app().sm.current = "Home"
+        self.popup = AnalysisQuitPopup(self, "Home")
+        self.popup.open()
 
     def back_btn(self):
-        App.get_running_app().sm.current = "New Capture"
+        self.popup = AnalysisQuitPopup(self, "Back")
+        self.popup.open()
+
+    def recapture_btn(self):
+        self.popup = AnalysisQuitPopup(self, "Recapture")
+        self.popup.open()
 
     def set_image_name(self, img_name):
         """
@@ -60,7 +68,36 @@ class AnalysisPage(Screen):
         order to display correct image.
         """
         self.img_name = img_name
-        self.ids.sample_img.source = F"{DirConfig.temp_dir}{self.img_name}.png"
+        self.img_path = F"{DirConfig.temp_dir}{self.img_name}.png"
+        self.ids.sample_img.source = self.img_path
 
     def analyse_btn(self):
         print("ANALYSIS BUTTON CLICKED")
+
+    def delete_imgs(self):
+        os.remove(self.img_path)
+
+
+class AnalysisQuitPopup(Popup):
+    """
+    Popup to warn of image discard when leaving analysis page.
+    """
+
+    def __init__(self, holder, btn_function, **kwargs):
+        self.holder = holder
+        self.btn_function = btn_function
+        super(AnalysisQuitPopup, self).__init__(**kwargs)
+
+    def enter(self):
+        """
+        Confirmation of discarding current sample image, checks if button click
+        is home or back/recapture.
+        """
+        self.holder.delete_imgs()
+        if self.btn_function == "Home":
+            App.get_running_app().sm.current = "Home"
+        else:
+            App.get_running_app().sm.current = "New Capture"
+
+    def cancel(self):
+        pass
