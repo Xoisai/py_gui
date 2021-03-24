@@ -16,7 +16,7 @@
             pos_hint: {"x": 0.8}
             canvas.before:
                 Color:
-                    rgba: 0.1, 0.1, 0.1, 1
+                    rgba: layout_background
                 Rectangle:
                     pos: 0, 0
                     size: self.size
@@ -43,4 +43,37 @@
         Image:
             id: sample_img
             size_hint: 0.6, 0.9
-            pos_hint: {"center_x": 0.4, "center_y": 0.5}
+            pos_hint: {"center_x": 0.35, "center_y": 0.5}
+            canvas.before:
+                Color:
+                    rgba: layout_background
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+
+        RelativeLayout:
+            size_hint: 0.3, 0.3
+            pos_hint: {"x": 0.675, "y": 0.5}
+            canvas.before:
+                Color:
+                    rgba: layout_background
+                Rectangle:
+                    pos: 0, 0
+                    size: self.size
+
+            Label:
+                text: "SAMPLE ANALYSIS STATISTICS"
+
+        RelativeLayout:
+            size_hint: 0.3, 0.3
+            pos_hint: {"x": 0.675, "y": 0.15}
+            canvas.before:
+                Color:
+                    rgba: layout_background
+                Rectangle:
+                    pos: 0, 0
+                    size: self.size
+
+            Label:
+                text: "RECAPTURE AND ANALYSE BUTTONS"
