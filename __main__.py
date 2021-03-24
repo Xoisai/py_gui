@@ -37,6 +37,7 @@ class TextileGui(App):
         # Add screens to project
         self.sm.add_widget(HomePage(name="Home"))
         self.sm.add_widget(capture.NewCapPage(name="New Capture"))
+        self.sm.add_widget(capture.AnalysisPage(name="Analysis"))
         self.sm.add_widget(browser.ProjectBrowserPage(name="Project Browser"))
         self.sm.add_widget(browser.ProjectViewPage(name="Project View"))
         self.sm.add_widget(settings.SettingsPage(name="Settings"))

@@ -10,8 +10,8 @@ from tex_py_gui.config import DirConfig
 
 class Project():
     """
-    Project class. If calling init with json_path, skips standard initialisaiton
-    and initialises from json file.
+    Project class. If calling init with json_path, skips standard
+    initialisaiton and initialises from json file.
     """
 
     def __init__(self, name=None, json_path=None):

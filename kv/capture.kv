@@ -30,11 +30,17 @@
 
                 Button:
                     size_hint: 1.0, 0.15
-                    # on_release:
-                        # app.root.transition = SlideTransition(direction="right")
-                        # root.parent.home_btn()
-                        # app.root.transition = SlideTransition(direction="left")
+                    on_release:
+                        root.capture_btn()
                     Image:
                         source: "static/icons/baseline_camera_white_48dp.png"
                         center_x: self.parent.center_x
                         center_y: self.parent.center_y
+
+<AnalysisPage>:
+    StandardPage:
+
+        Image:
+            id: sample_img
+            size_hint: 0.6, 0.9
+            pos_hint: {"center_x": 0.4, "center_y": 0.5}
