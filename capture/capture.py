@@ -61,3 +61,6 @@ class AnalysisPage(Screen):
         """
         self.img_name = img_name
         self.ids.sample_img.source = F"{DirConfig.temp_dir}{self.img_name}.png"
+
+    def analyse_btn(self):
+        print("ANALYSIS BUTTON CLICKED")

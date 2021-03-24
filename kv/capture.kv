@@ -24,8 +24,8 @@
             GridLayout:
                 size_hint: 1.0, 0.6
                 pos_hint: {"center_y": 0.5}
-                spacing: [20, 20]
-                padding: 20
+                spacing: grid_spacing
+                padding: grid_padding
                 cols: 1
 
                 Button:
@@ -51,7 +51,6 @@
                     pos: self.pos
                     size: self.size
 
-
         RelativeLayout:
             size_hint: 0.3, 0.3
             pos_hint: {"x": 0.675, "y": 0.5}
@@ -75,5 +74,23 @@
                     pos: 0, 0
                     size: self.size
 
-            Label:
-                text: "RECAPTURE AND ANALYSE BUTTONS"
+            GridLayout:
+                spacing: grid_spacing
+                padding: grid_padding
+                cols: 2
+
+                SymbolButton:
+                    text: "Analyse"
+                    on_release: root.analyse_btn()
+                    Image:
+                        source: "static/icons/baseline_assessment_white_48dp.png"
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
+
+                SymbolButton:
+                    text: "Recapture"
+                    on_release: root.back_btn()
+                    Image:
+                        source: "static/icons/baseline_autorenew_white_48dp.png"
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
