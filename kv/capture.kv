@@ -52,8 +52,8 @@
                     size: self.size
 
         RelativeLayout:
-            size_hint: 0.3, 0.3
-            pos_hint: {"x": 0.675, "y": 0.5}
+            size_hint: 0.3, 0.6
+            pos_hint: {"x": 0.675, "y": 0.35}
             canvas.before:
                 Color:
                     rgba: layout_background
@@ -65,8 +65,8 @@
                 text: "SAMPLE ANALYSIS STATISTICS"
 
         RelativeLayout:
-            size_hint: 0.3, 0.3
-            pos_hint: {"x": 0.675, "y": 0.15}
+            size_hint: 0.3, 0.25
+            pos_hint: {"x": 0.675, "y": 0.05}
             canvas.before:
                 Color:
                     rgba: layout_background
@@ -77,7 +77,7 @@
             GridLayout:
                 spacing: grid_spacing
                 padding: grid_padding
-                cols: 2
+                cols: 3
 
                 SymbolButton:
                     text: "Analyse"
@@ -88,10 +88,10 @@
                         center_y: self.parent.center_y
 
                 SymbolButton:
-                    text: "Recapture"
-                    on_release: root.back_btn()
+                    text: "Save"
+                    on_release: root.save_btn()
                     Image:
-                        source: "static/icons/baseline_autorenew_white_48dp.png"
+                        source: "static/icons/baseline_save_white_48dp.png"
                         center_x: self.parent.center_x
                         center_y: self.parent.center_y
 
@@ -99,7 +99,7 @@
 <AnalysisQuitPopup>:
     auto_dismiss: True
     size_hint: 0.5, 0.25
-    pos_hint: {"x": 0.25, "y": 0.4}
+    pos_hint: {"x_center": 0.5, "y_center": 0.5}
     title: "The current sample date will be deleted. Are you sure?"
 
     GridLayout:
@@ -116,3 +116,25 @@
         Button:
             text: "No"
             on_release: root.dismiss()
+
+# New project popup form
+<SaveSamplePopup>:
+    auto_dismiss: True
+    size_hint: 0.5, 0.5
+    pos_hint: {"x_center": 0.5, "y_center": 0.5}
+    title: "Select Project"
+
+    GridLayout:
+        cols: 2
+        #
+        # Button:
+        #     text: "Save"
+        #     # on_release:
+        #     #     app.root.transition = SlideTransition(direction="right")
+        #     #     root.dismiss()
+        #     #     root.enter()
+        #     #     app.root.transition = SlideTransition(direction="left")
+        #
+        # Button:
+        #     text: "Cancel"
+        #     on_release: root.dismiss()

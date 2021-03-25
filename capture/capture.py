@@ -74,6 +74,10 @@ class AnalysisPage(Screen):
     def analyse_btn(self):
         print("ANALYSIS BUTTON CLICKED")
 
+    def save_btn(self):
+        self.popup = SaveSamplePopup(self)
+        self.popup.open()
+
     def delete_imgs(self):
         os.remove(self.img_path)
 
@@ -101,3 +105,24 @@ class AnalysisQuitPopup(Popup):
 
     def cancel(self):
         pass
+
+
+class SaveSamplePopup(Popup):
+    """
+    Popup to select project to save sample to, and name sample.
+    """
+
+    def __init__(self, holder, **kwargs):
+        self.holder = holder
+        super(SaveSamplePopup, self).__init__(**kwargs)
+
+    # def enter(self):
+    #     """
+    #     Confirmation of discarding current sample image, checks if button click
+    #     is home or back/recapture.
+    #     """
+    #     self.holder.delete_imgs()
+    #     if self.btn_function == "Home":
+    #         App.get_running_app().sm.current = "Home"
+    #     else:
+    #         App.get_running_app().sm.current = "New Capture"
