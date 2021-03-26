@@ -123,9 +123,36 @@
     size_hint: 0.5, 0.5
     pos_hint: {"x_center": 0.5, "y_center": 0.5}
     title: "Select Project"
+    s_name: sample_name_input.text
 
     GridLayout:
-        cols: 2
+        cols: 1
+        padding: grid_padding
+        spacing: grid_spacing
+
+        TextInput:
+            id: sample_name_input
+            halign: "center"
+            valign: "middle"
+            size_hint: 1.0, 0.15
+            multiline: False
+            hint_text: "Sample Name"
+
+        ScrollView:
+            size_hint: 1.0, 0.9
+            do_scroll_x: False
+            do_scroll_y: True
+
+            GridLayout:
+                id: p_btn_grid_popup
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: 60
+                spacing: 20
+                cols: 1
+
+
+
         #
         # Button:
         #     text: "Save"

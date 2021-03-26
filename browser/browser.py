@@ -92,7 +92,6 @@ class ProjectViewPage(Screen):
         Function called before transitioning to the project view page. Assigns
         relevant values to the screen, specific to the selected project.
         """
-        # self.p_name = p_name
         json_path = F"{DirConfig.project_dir}{p_name}/{p_name}.json"
         self.project = data_models.Project(json_path=json_path)
         self.ids.page_title.text = F"Project {self.project.name}"

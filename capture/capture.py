@@ -2,9 +2,11 @@ import os
 from datetime import datetime
 from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
+from kivy.uix.button import Button
 from kivy.app import App
 from tex_py_gui import widgets
 from tex_py_gui.config import DirConfig
+from tex_py_gui.data import data_models
 
 # TEMP - REMOVE ON ACTUAL
 from PIL import Image
@@ -30,9 +32,16 @@ class NewCapPage(Screen):
     def capture_btn(self):
         # !!!!!!! temp - - - - - - - - -
         capture_datetime = datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
-        img_name = F"temp-{capture_datetime}"
-        image = Image.new('RGB', (1000, 1000), (100, 100, 150))
-        image.save(F"{DirConfig.temp_dir}{img_name}.png", "PNG")
+        img_name = F"{capture_datetime}.png"
+        import random
+        colour = (random.randint(0, 255),
+                  random.randint(0, 255),
+                  random.randint(0, 215))
+        image = Image.new('RGB', (1000, 1000), colour)
+        image.save(F"{DirConfig.temp_dir}CL-{img_name}", "PNG")
+        colour = (colour[0], colour[1], colour[2]+40)
+        image = Image.new('RGB', (1000, 1000), colour)
+        image.save(F"{DirConfig.temp_dir}IR-{img_name}", "PNG")
         # !!!!!!! temp - - - - - - - - -
         analysis_scr = App.get_running_app().sm.get_screen("Analysis")
         analysis_scr.set_image_name(img_name)
@@ -67,8 +76,8 @@ class AnalysisPage(Screen):
         Function to set the temp name of images captured on capture screen, in
         order to display correct image.
         """
-        self.img_name = img_name
-        self.img_path = F"{DirConfig.temp_dir}{self.img_name}.png"
+        self.imgs = {"SD": F"CL-{img_name}", "IR": F"IR-{img_name}"}
+        self.img_path = F"{DirConfig.temp_dir}{self.imgs['SD']}"
         self.ids.sample_img.source = self.img_path
 
     def analyse_btn(self):
@@ -78,8 +87,20 @@ class AnalysisPage(Screen):
         self.popup = SaveSamplePopup(self)
         self.popup.open()
 
+    def save_to_project(self, p_name, s_name):
+        """
+        Function to take assigned project, instantiate project class and call
+        sample creation method within that project.
+        """
+        json_path = F"{DirConfig.project_dir}{p_name}/{p_name}.json"
+        project = data_models.Project(json_path=json_path)
+        sample = data_models.Sample(name=s_name,
+                                    project=project,
+                                    imgs=self.imgs)
+
     def delete_imgs(self):
-        os.remove(self.img_path)
+        for type, img in self.imgs.items():
+            os.remove(F"{DirConfig.temp_dir}{img}")
 
 
 class AnalysisQuitPopup(Popup):
@@ -115,14 +136,25 @@ class SaveSamplePopup(Popup):
     def __init__(self, holder, **kwargs):
         self.holder = holder
         super(SaveSamplePopup, self).__init__(**kwargs)
+        self.list_projects()
 
-    # def enter(self):
-    #     """
-    #     Confirmation of discarding current sample image, checks if button click
-    #     is home or back/recapture.
-    #     """
-    #     self.holder.delete_imgs()
-    #     if self.btn_function == "Home":
-    #         App.get_running_app().sm.current = "Home"
-    #     else:
-    #         App.get_running_app().sm.current = "New Capture"
+    def list_projects(self):
+        """
+        Get a list of all  projects available to save to
+        """
+        # Get all project directories in main project dir and sort
+        entries = os.scandir(DirConfig.project_dir)
+        dirs = [e for e in entries if os.path.isdir(e)]
+        dirs.sort(key=lambda d: d.name.lower())
+
+        # Add button for each project
+        for d in dirs:
+            btn = Button(text=d.name)
+            btn.bind(on_release=self.p_btn_click_popup)
+            self.ids.p_btn_grid_popup.add_widget(btn)
+
+    def p_btn_click_popup(self, instance):
+        p_selection = instance.text
+        s_name = self.s_name
+        self.holder.save_to_project(p_selection, s_name)
+        self.dismiss()
