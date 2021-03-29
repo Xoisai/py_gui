@@ -23,6 +23,7 @@ class Project():
             self.path = F"{DirConfig.project_dir}{name}/"
             self.json_path = F"{self.path}{self.name}.json"
             self.creation_date = datetime.today().strftime("%Y-%m-%d-%H:%M:%S")
+            self.samples = {}
             self.create_project_dir()
             self.write_json()
 
@@ -38,7 +39,8 @@ class Project():
         project_dict = {"name": self.name,
                         "path": self.path,
                         "json_path": self.json_path,
-                        "creation_date": self.creation_date}
+                        "creation_date": self.creation_date,
+                        "samples": self.samples}
         return project_dict
 
     def read_json(self, json_path):
@@ -55,6 +57,7 @@ class Project():
         self.path = project_dict["path"]
         self.json_path = project_dict["json_path"]
         self.creation_date = project_dict["creation_date"]
+        self.samples = project_dict["samples"]
 
     def write_json(self):
         """
@@ -63,6 +66,14 @@ class Project():
         """
         with open(self.json_path, 'w') as f:
             json.dump(self.get_project_dict(), f)
+
+    def add_sample(self, sample):
+        """
+        Add a sample to the project sample dictionary and update project json
+        file.
+        """
+        self.samples[sample.name] = sample.json_path
+        self.write_json()
 
 
 class Sample():
@@ -86,6 +97,9 @@ class Sample():
         self.create_sample_dir()
         self.add_images()
         self.write_json()
+
+        # Update parent project to include refs to sample json file
+        project.add_sample(self)
 
     def create_sample_dir(self):
         """
