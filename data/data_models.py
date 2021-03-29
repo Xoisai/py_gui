@@ -99,11 +99,12 @@ class Sample():
     def add_images(self):
         """
         Transfers temp storage of images to permanent storage in project dir
-        and renames to given name.
+        and renames to given name, then updates imgs class variable.
         """
         for type, img in self.imgs.items():
             shutil.move(F"{DirConfig.temp_dir}{img}",
                         F"{self.path}{type}-{self.name}.png")
+            self.imgs[type] = F"{type}-{self.name}.png"
 
     def get_sample_dict(self):
         sample_dict = {"name": self.name,

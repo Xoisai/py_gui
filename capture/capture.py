@@ -8,9 +8,6 @@ from tex_py_gui import widgets
 from tex_py_gui.config import DirConfig
 from tex_py_gui.data import data_models
 
-# TEMP - REMOVE ON ACTUAL
-from PIL import Image
-
 
 class NewCapPage(Screen):
     """
@@ -31,20 +28,25 @@ class NewCapPage(Screen):
 
     def capture_btn(self):
         # !!!!!!! temp - - - - - - - - -
+        # TEMP - REMOVE ON ACTUAL
+        from PIL import Image
         capture_datetime = datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
-        img_name = F"{capture_datetime}.png"
+        imgs = {"SD": F"SD-{capture_datetime}.png",
+                "IR": F"IR-{capture_datetime}.png"}
         import random
         colour = (random.randint(0, 255),
                   random.randint(0, 255),
                   random.randint(0, 215))
         image = Image.new('RGB', (1000, 1000), colour)
-        image.save(F"{DirConfig.temp_dir}CL-{img_name}", "PNG")
+        image.save(F"{DirConfig.temp_dir}{imgs['SD']}", "PNG")
         colour = (colour[0], colour[1], colour[2]+40)
         image = Image.new('RGB', (1000, 1000), colour)
-        image.save(F"{DirConfig.temp_dir}IR-{img_name}", "PNG")
+        image.save(F"{DirConfig.temp_dir}{imgs['IR']}", "PNG")
         # !!!!!!! temp - - - - - - - - -
         analysis_scr = App.get_running_app().sm.get_screen("Analysis")
-        analysis_scr.set_image_name(img_name)
+        analysis_scr.set_image_refs(imgs,
+                                    DirConfig.temp_dir,
+                                    temp_img=True)
         App.get_running_app().sm.current = "Analysis"
 
 
@@ -60,25 +62,39 @@ class AnalysisPage(Screen):
         self.add_widget(widgets.NavBar())
 
     def home_btn(self):
-        self.popup = AnalysisQuitPopup(self, "Home")
-        self.popup.open()
+        if self.temp_img:
+            self.popup = AnalysisQuitPopup(self, "Home")
+            self.popup.open()
+        else:
+            App.get_running_app().sm.current = "Home"
 
     def back_btn(self):
-        self.popup = AnalysisQuitPopup(self, "Back")
-        self.popup.open()
+        if self.temp_img:
+            self.popup = AnalysisQuitPopup(self, "Back")
+            self.popup.open()
+        else:
+            App.get_running_app().sm.current = "New Capture"
 
     def recapture_btn(self):
         self.popup = AnalysisQuitPopup(self, "Recapture")
         self.popup.open()
 
-    def set_image_name(self, img_name):
+    def set_image_refs(self, imgs, img_dir, temp_img=False):
         """
-        Function to set the temp name of images captured on capture screen, in
-        order to display correct image.
+        Function to set references for images displayed on analysis page.
+        *** MUST BE CALLED BEFORE OPENING PAGE ***
+
+        Args:
+            imgs - dictionary containing image names for SD and IR images
+            img_dir - directory of the images
+            temp_img - sets whether images passed are freshly captured,
+            therefore warnings must be put inplace to prevent accidental
+            deletion (i.e on back button clicked).
         """
-        self.imgs = {"SD": F"CL-{img_name}", "IR": F"IR-{img_name}"}
-        self.img_path = F"{DirConfig.temp_dir}{self.imgs['SD']}"
+        self.imgs = imgs
+        self.img_path = F"{img_dir}{self.imgs['SD']}"
         self.ids.sample_img.source = self.img_path
+        self.temp_img = temp_img
 
     def analyse_btn(self):
         print("ANALYSIS BUTTON CLICKED")
@@ -97,6 +113,9 @@ class AnalysisPage(Screen):
         sample = data_models.Sample(name=s_name,
                                     project=project,
                                     imgs=self.imgs)
+
+        # Reassign page image refs
+        self.set_image_refs(sample.imgs, sample.path)
 
     def delete_imgs(self):
         for type, img in self.imgs.items():
@@ -140,7 +159,7 @@ class SaveSamplePopup(Popup):
 
     def list_projects(self):
         """
-        Get a list of all  projects available to save to
+        Get a list of all projects available to save to
         """
         # Get all project directories in main project dir and sort
         entries = os.scandir(DirConfig.project_dir)
