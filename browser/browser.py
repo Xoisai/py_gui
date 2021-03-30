@@ -64,13 +64,14 @@ class NewProjectPopup(Popup):
     def __init__(self, holder, **kwargs):
         self.holder = holder
         super(NewProjectPopup, self).__init__(**kwargs)
+        self.ids.add_p_btn.disabled = True
 
     def validate_p_name(self, p_name):
         """
         Validation function to ensure project name doesn't already exist.
         """
         self.ids.add_p_btn.disabled = False
-        if p_name in utils.get_p_names():
+        if p_name in utils.get_p_names() or p_name == "":
             self.ids.add_p_btn.disabled = True
 
     def enter(self):
