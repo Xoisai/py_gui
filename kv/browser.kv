@@ -21,9 +21,10 @@
             size_hint: 1.0, 0.1
             multiline: False
             hint_text: "Project Name"
-            on_text_validate: root.validate_p_name(self.text)
+            on_text: root.validate_p_name(self.text)
 
         Button:
+            id: add_p_btn
             size_hint: 1.0, 0.1
             text: "Add Project"
             on_release: root.enter()

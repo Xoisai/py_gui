@@ -7,6 +7,7 @@ from kivy.properties import ObjectProperty
 from tex_py_gui.config import DirConfig
 from tex_py_gui import widgets
 from tex_py_gui.data import data_models
+from tex_py_gui import utils
 
 
 class ProjectBrowserPage(Screen):
@@ -67,7 +68,9 @@ class NewProjectPopup(Popup):
         """
         Validation function to ensure project name doesn't already exist.
         """
-        print(F"Validator got {p_name}")
+        self.ids.add_p_btn.disabled = False
+        if p_name in utils.get_p_names():
+            self.ids.add_p_btn.disabled = True
 
     def enter(self):
         self.add_project(self.project_name)
