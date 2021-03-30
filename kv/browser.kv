@@ -63,3 +63,28 @@
 
         PageTitle:
             id: page_title
+
+        ScrollView:
+            size_hint: 0.8, 0.75
+            pos_hint: {"center_x": 0.5, "center_y": 0.45}
+            do_scroll_x: False
+            do_scroll_y: True
+
+            GridLayout:
+                id: s_btn_grid
+                cols: 4
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: 300
+                spacing: 20
+
+
+# - - - - - - - - Sample View - - - - - - - -
+
+<SampleViewPage>:
+
+    StandardPage:
+        size: root.width, root.height
+
+        PageTitle:
+            id: page_title

@@ -40,6 +40,7 @@ class TextileGui(App):
         self.sm.add_widget(capture.AnalysisPage(name="Analysis"))
         self.sm.add_widget(browser.ProjectBrowserPage(name="Project Browser"))
         self.sm.add_widget(browser.ProjectViewPage(name="Project View"))
+        self.sm.add_widget(browser.SampleViewPage(name="Sample View"))
         self.sm.add_widget(settings.SettingsPage(name="Settings"))
 
         return self.sm

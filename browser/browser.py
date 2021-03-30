@@ -47,8 +47,8 @@ class ProjectBrowserPage(Screen):
 
     def p_btn_click(self, instance):
         p_selection = instance.text
-        view_scr = App.get_running_app().sm.get_screen("Project View")
-        view_scr.set_project(p_selection)
+        p_view_scr = App.get_running_app().sm.get_screen("Project View")
+        p_view_scr.set_project(p_selection)
         App.get_running_app().sm.current = "Project View"
 
 
@@ -76,6 +76,9 @@ class NewProjectPopup(Popup):
 
 
 class ProjectViewPage(Screen):
+    """
+    Ref: "Project View"
+    """
 
     def __init__(self, **kwargs):
         super(ProjectViewPage, self).__init__(**kwargs)
@@ -94,4 +97,60 @@ class ProjectViewPage(Screen):
         """
         json_path = F"{DirConfig.project_dir}{p_name}/{p_name}.json"
         self.project = data_models.Project(json_path=json_path)
+        self.list_samples()
         self.ids.page_title.text = F"Project {self.project.name}"
+
+    def list_samples(self):
+        """
+        Search through project sample dict and add a button to project page for
+        each.
+        """
+        self.ids.s_btn_grid.clear_widgets()  # Clear current samples grid
+
+        # Get all samples in project alphabetically and add a button
+        for s_name in sorted(self.project.samples, key=lambda s: s.lower()):
+            # init sample class
+            sample = data_models.Sample(json_path=self.project.samples[s_name])
+            btn = widgets.ThumbnailButton()
+            btn.text = sample.name
+            btn.ids.thumb_img.source = sample.get_image_path("SD")
+            btn.bind(on_release=self.s_btn_click)
+            self.ids.s_btn_grid.add_widget(btn)
+
+    def s_btn_click(self, instance):
+        """
+        Open Sample view page from sample button click
+        """
+        s_selection = instance.text
+        s_view_scr = App.get_running_app().sm.get_screen("Sample View")
+        s_view_scr.set_sample(self.project.name, s_selection)
+        App.get_running_app().sm.current = "Sample View"
+
+
+class SampleViewPage(Screen):
+    """
+    Ref: "Sample View"
+
+    Sample overview screen
+    """
+
+    def __init__(self, **kwargs):
+        super(SampleViewPage, self).__init__(**kwargs)
+        self.add_widget(widgets.NavBar())
+
+    def home_btn(self):
+        App.get_running_app().sm.current = "Home"
+
+    def back_btn(self):
+        App.get_running_app().sm.current = "Project Browser"
+
+    def set_sample(self, p_name, s_name):
+        """
+        Function called before transitioning to the sample view page. Assigns
+        relevant values to the screen, specific to the selected sample.
+        """
+        json_path = F"{DirConfig.project_dir}{p_name}/{p_name}.json"
+        self.project = data_models.Project(json_path=json_path)
+        s_json_path = F"{self.project.path}{s_name}/{s_name}.json"
+        self.sample = data_models.Sample(json_path=s_json_path)
+        self.ids.page_title.text = F"Sample {self.sample.name}"

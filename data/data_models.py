@@ -83,23 +83,23 @@ class Sample():
     """
 
     def __init__(self, name=None, project=None, imgs=None, json_path=None):
-        # if json_path is not None:
-        #     self.read_json(json_path)
-            # instantiate project from json here
-        # else:
-        self.name = name
-        self.imgs = imgs
-        self.project = project
-        self.project_json_path = project.json_path
-        self.path = F"{self.project.path}{self.name}/"
-        self.json_path = F"{self.path}{self.name}.json"
-        self.creation_date = datetime.today().strftime("%Y-%m-%d-%H:%M:%S")
-        self.create_sample_dir()
-        self.add_images()
-        self.write_json()
+        if json_path is not None:
+            self.read_json(json_path)
+            self.project = Project(json_path=self.project_json_path)
+        else:
+            self.name = name
+            self.imgs = imgs
+            self.project = project
+            self.project_json_path = project.json_path
+            self.path = F"{self.project.path}{self.name}/"
+            self.json_path = F"{self.path}{self.name}.json"
+            self.creation_date = datetime.today().strftime("%Y-%m-%d-%H:%M:%S")
+            self.create_sample_dir()
+            self.add_images()
+            self.write_json()
 
-        # Update parent project to include refs to sample json file
-        project.add_sample(self)
+            # Update parent project to include refs to sample json file
+            project.add_sample(self)
 
     def create_sample_dir(self):
         """
@@ -129,10 +129,22 @@ class Sample():
                        "creation_date": self.creation_date}
         return sample_dict
 
-    # def read_json():
-    #     """
-    #
-    #     """
+    def read_json(self, json_path):
+        """
+        Read in json file to assign class attributes.
+        """
+        # Read in json file
+        f = open(json_path)
+        project_dict = json.load(f)
+        f.close()
+
+        # Assign to class variables
+        self.name = project_dict["name"]
+        self.imgs = project_dict["imgs"]
+        self.project_json_path = project_dict["project_json_path"]
+        self.path = project_dict["path"]
+        self.json_path = project_dict["json_path"]
+        self.creation_date = project_dict["creation_date"]
 
     def write_json(self):
         """
@@ -140,3 +152,13 @@ class Sample():
         """
         with open(self.json_path, 'w') as f:
             json.dump(self.get_sample_dict(), f)
+
+    def get_image_path(self, img_type):
+        """
+        Returns the path of a sample image, takes as argument image type to
+        retrieve.
+        """
+        if img_type == "SD":
+            return F"{self.path}{self.imgs['SD']}"
+        if img_type == "IR":
+            return F"{self.path}{self.imgs['IR']}"

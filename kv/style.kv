@@ -16,3 +16,19 @@
     valign: "bottom"
     halign: "center"
     padding: 20, 20
+
+<ThumbnailButton>:
+    text_size: root.width, root.height
+    font_size: 40
+    color: 0.1, 0.5, 0.6, 1
+    size_hint: 0.2, 1.0
+    valign: "bottom"
+    halign: "center"
+    padding: 20, 20
+
+    # on_release: root.analyse_btn()
+    Image:
+        id: thumb_img
+        # source: "static/icons/baseline_assessment_white_48dp.png"
+        center_x: self.parent.center_x
+        center_y: self.parent.center_y
