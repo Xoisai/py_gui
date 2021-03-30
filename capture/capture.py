@@ -187,10 +187,7 @@ class SaveSamplePopup(Popup):
         s_name = self.s_name
         self.holder.save_to_project(p_selection, s_name)
         self.dismiss()
-        from kivy.uix.screenmanager import SlideTransition
-        App.get_running_app().sm.transition = SlideTransition(direction="right")
         if self.follow_action == "Home":
             App.get_running_app().sm.current = "Home"
         elif self.follow_action == "Back":
             App.get_running_app().sm.current = "New Capture"
-        App.get_running_app().sm.transition = SlideTransition(direction="left")

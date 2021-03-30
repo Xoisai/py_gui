@@ -1,9 +1,6 @@
 <NewCapPage>:
     StandardPage:
 
-        # PageTitle:
-        #     text: "New Capture"
-
         BoxLayout:
             size_hint: 0.6, 0.9
             pos_hint: {"center_x": 0.4, "center_y": 0.5}
@@ -31,6 +28,7 @@
                 Button:
                     size_hint: 1.0, 0.15
                     on_release:
+                        app.root.transition.direction = "left"
                         root.capture_btn()
                     Image:
                         source: "static/icons/baseline_camera_white_48dp.png"
@@ -89,7 +87,8 @@
 
                 SymbolButton:
                     text: "Save"
-                    on_release: root.save_btn()
+                    on_release:
+                        root.save_btn()
                     Image:
                         source: "static/icons/baseline_save_white_48dp.png"
                         center_x: self.parent.center_x
@@ -108,6 +107,7 @@
         Button:
             text: "Yes"
             on_release:
+                app.root.transition.direction = "right"
                 root.holder.save_btn(follow_action=root.btn_function)
                 root.dismiss()
 
@@ -115,10 +115,9 @@
             text: "No"
             on_release:
                 # Dismiss popup and call function to delete imgs and exit
-                app.root.transition = SlideTransition(direction="right")
+                app.root.transition.direction = "right"
                 root.dismiss()
                 root.enter()
-                app.root.transition = SlideTransition(direction="left")
 
 # New project popup form
 <SaveSamplePopup>:
