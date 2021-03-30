@@ -11,11 +11,19 @@ from tex_py_gui.config import DirConfig
 
 class Project():
     """
-    Project class. If calling init with json_path, skips standard
-    initialisaiton and initialises from json file.
+    Project object.
     """
 
     def __init__(self, name=None, json_path=None):
+        """
+        Either initialises a new project class and saves project data to json,
+        or inits directly from project json file, specified by json_path.
+
+        Args:
+            name - project name str
+            json_path - absolute path to json file containing project data to
+            init from.
+        """
         if json_path is not None:
             self.read_json(json_path)
         else:
@@ -78,11 +86,22 @@ class Project():
 
 class Sample():
     """
-    Sample class. If calling init with json_path, skips standard
-    initialisaiton and instantiates from json file.
+    Sample object.
     """
 
     def __init__(self, name=None, project=None, imgs=None, json_path=None):
+        """
+        Either initialises a new sample class and saves sample data to json, or
+        inits directly from sample json file, specified by json_path.
+
+        Args:
+            name - sample name str
+            project - project object for parent project
+            imgs - dict containing names of standard ["SD"] and IR ["IR"] img
+            names
+            json_path - absolute path to json file containing sample data to
+            init from.
+        """
         if json_path is not None:
             self.read_json(json_path)
             self.project = Project(json_path=self.project_json_path)

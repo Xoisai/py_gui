@@ -99,8 +99,15 @@ class AnalysisPage(Screen):
     def analyse_btn(self):
         print("ANALYSIS BUTTON CLICKED")
 
-    def save_btn(self):
-        self.popup = SaveSamplePopup(self)
+    def save_btn(self, **kwargs):
+        """
+        Save functionality for moving images to a project.
+
+        kwargs:
+            follow_action - action to take following save - pass "Back" or
+            "Home" for back/home buttons (i.e complete this action after save)
+        """
+        self.popup = SaveSamplePopup(self, **kwargs)
         self.popup.open()
 
     def save_to_project(self, p_name, s_name):
@@ -124,7 +131,9 @@ class AnalysisPage(Screen):
 
 class AnalysisQuitPopup(Popup):
     """
-    Popup to warn of image discard when leaving analysis page.
+    Popup to warn of image discard when leaving analysis page, and offers to
+    save. If yes selected, open up the save popup and pass in the button
+    functionality (Home/Back) to complete action once save complete.
     """
 
     def __init__(self, holder, btn_function, **kwargs):
@@ -152,8 +161,9 @@ class SaveSamplePopup(Popup):
     Popup to select project to save sample to, and name sample.
     """
 
-    def __init__(self, holder, **kwargs):
+    def __init__(self, holder, follow_action=None, **kwargs):
         self.holder = holder
+        self.follow_action = follow_action
         super(SaveSamplePopup, self).__init__(**kwargs)
         self.list_projects()
 
@@ -177,3 +187,10 @@ class SaveSamplePopup(Popup):
         s_name = self.s_name
         self.holder.save_to_project(p_selection, s_name)
         self.dismiss()
+        from kivy.uix.screenmanager import SlideTransition
+        App.get_running_app().sm.transition = SlideTransition(direction="right")
+        if self.follow_action == "Home":
+            App.get_running_app().sm.current = "Home"
+        elif self.follow_action == "Back":
+            App.get_running_app().sm.current = "New Capture"
+        App.get_running_app().sm.transition = SlideTransition(direction="left")

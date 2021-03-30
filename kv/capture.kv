@@ -100,7 +100,7 @@
     auto_dismiss: True
     size_hint: 0.5, 0.25
     pos_hint: {"x_center": 0.5, "y_center": 0.5}
-    title: "The current sample data will be deleted. Are you sure?"
+    title: "The current sample data will be discarded. Would you like to save?"
 
     GridLayout:
         cols: 2
@@ -108,14 +108,17 @@
         Button:
             text: "Yes"
             on_release:
+                root.holder.save_btn(follow_action=root.btn_function)
+                root.dismiss()
+
+        Button:
+            text: "No"
+            on_release:
+                # Dismiss popup and call function to delete imgs and exit
                 app.root.transition = SlideTransition(direction="right")
                 root.dismiss()
                 root.enter()
                 app.root.transition = SlideTransition(direction="left")
-
-        Button:
-            text: "No"
-            on_release: root.dismiss()
 
 # New project popup form
 <SaveSamplePopup>:
@@ -150,18 +153,3 @@
                 row_default_height: 60
                 spacing: 20
                 cols: 1
-
-
-
-        #
-        # Button:
-        #     text: "Save"
-        #     # on_release:
-        #     #     app.root.transition = SlideTransition(direction="right")
-        #     #     root.dismiss()
-        #     #     root.enter()
-        #     #     app.root.transition = SlideTransition(direction="left")
-        #
-        # Button:
-        #     text: "Cancel"
-        #     on_release: root.dismiss()
