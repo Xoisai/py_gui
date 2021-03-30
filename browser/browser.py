@@ -50,6 +50,7 @@ class ProjectBrowserPage(Screen):
         p_selection = instance.text
         p_view_scr = App.get_running_app().sm.get_screen("Project View")
         p_view_scr.set_project(p_selection)
+        App.get_running_app().sm.transition.direction = "left"
         App.get_running_app().sm.current = "Project View"
 
 
