@@ -92,8 +92,8 @@ class AnalysisPage(Screen):
             deletion (i.e on back button clicked).
         """
         self.imgs = imgs
-        self.img_path = F"{img_dir}{self.imgs['SD']}"
-        self.ids.sample_img.source = self.img_path
+        self.img_dir = img_dir
+        self.ids.sample_img.source = F"{self.img_dir}{self.imgs['SD']}"
         self.temp_img = temp_img
 
     def analyse_btn(self):
@@ -127,6 +127,15 @@ class AnalysisPage(Screen):
     def delete_imgs(self):
         for type, img in self.imgs.items():
             os.remove(F"{DirConfig.temp_dir}{img}")
+
+    def hotswap_pic_btn(self):
+        """
+        Button to swap image between IR and SD imgs.
+        """
+        if self.ids.sample_img.source == F"{self.img_dir}{self.imgs['SD']}":
+            self.ids.sample_img.source = F"{self.img_dir}{self.imgs['IR']}"
+        elif self.ids.sample_img.source == F"{self.img_dir}{self.imgs['IR']}":
+            self.ids.sample_img.source = F"{self.img_dir}{self.imgs['SD']}"
 
 
 class AnalysisQuitPopup(Popup):

@@ -38,16 +38,33 @@
 <AnalysisPage>:
     StandardPage:
 
-        Image:
-            id: sample_img
+        RelativeLayout:
             size_hint: 0.6, 0.9
             pos_hint: {"center_x": 0.35, "center_y": 0.5}
-            canvas.before:
-                Color:
-                    rgba: layout_background
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+
+            Image:
+                id: sample_img
+                canvas.before:
+                    Color:
+                        rgba: layout_background
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+            # Hotswap button for changing between standard and IR images
+            Button:
+                size_hint: 0.1, 0.1
+                pos_hint: {"center_x": 0.95, "center_y": 0.05}
+                background_normal: ''
+                background_color: layout_background
+
+                on_release:
+                    root.hotswap_pic_btn()
+
+                Image:
+                    source: "static/icons/baseline_autorenew_white_48dp.png"
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
 
         RelativeLayout:
             size_hint: 0.3, 0.6
