@@ -63,6 +63,12 @@ class NewProjectPopup(Popup):
         self.holder = holder
         super(NewProjectPopup, self).__init__(**kwargs)
 
+    def validate_p_name(self, p_name):
+        """
+        Validation function to ensure project name doesn't already exist.
+        """
+        print(F"Validator got {p_name}")
+
     def enter(self):
         self.add_project(self.project_name)
         self.holder.list_projects()

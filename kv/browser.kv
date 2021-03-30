@@ -21,6 +21,7 @@
             size_hint: 1.0, 0.1
             multiline: False
             hint_text: "Project Name"
+            on_text_validate: root.validate_p_name(self.text)
 
         Button:
             size_hint: 1.0, 0.1
