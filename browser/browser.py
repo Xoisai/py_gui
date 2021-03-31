@@ -99,8 +99,7 @@ class ProjectViewPage(Screen):
         App.get_running_app().sm.current = "Home"
 
     def back_btn(self):
-        App.get_running_app().sm.current = \
-         App.get_running_app().sm.previous()
+        App.get_running_app().sm.current = "Project Browser"
 
     def set_project(self, p_name):
         """
@@ -131,38 +130,17 @@ class ProjectViewPage(Screen):
 
     def s_btn_click(self, instance):
         """
-        Open Sample view page from sample button click
+        Open analysis view page (capture application branch) from sample button
+        click.
         """
         s_selection = instance.text
-        s_view_scr = App.get_running_app().sm.get_screen("Sample View")
-        s_view_scr.set_sample(self.project.name, s_selection)
-        App.get_running_app().sm.current = "Sample View"
+        s_json_path = F"{self.project.path}{s_selection}/{s_selection}.json"
+        sample = data_models.Sample(json_path=s_json_path)
+        s_view_scr = App.get_running_app().sm.get_screen("Analysis")
 
-
-class SampleViewPage(Screen):
-    """
-    Ref: "Sample View"
-
-    Sample overview screen
-    """
-
-    def __init__(self, **kwargs):
-        super(SampleViewPage, self).__init__(**kwargs)
-        self.add_widget(widgets.NavBar())
-
-    def home_btn(self):
-        App.get_running_app().sm.current = "Home"
-
-    def back_btn(self):
-        App.get_running_app().sm.current = "Project Browser"
-
-    def set_sample(self, p_name, s_name):
-        """
-        Function called before transitioning to the sample view page. Assigns
-        relevant values to the screen, specific to the selected sample.
-        """
-        json_path = F"{DirConfig.project_dir}{p_name}/{p_name}.json"
-        self.project = data_models.Project(json_path=json_path)
-        s_json_path = F"{self.project.path}{s_name}/{s_name}.json"
-        self.sample = data_models.Sample(json_path=s_json_path)
-        self.ids.page_title.text = F"Sample {self.sample.name}"
+        # Prepare analysis page for current sample
+        s_view_scr.set_page_refs(App.get_running_app().sm.current,
+                                 sample.imgs,
+                                 sample.path)
+        App.get_running_app().sm.transition.direction = "left"
+        App.get_running_app().sm.current = "Analysis"

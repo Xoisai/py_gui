@@ -44,9 +44,10 @@ class NewCapPage(Screen):
         image.save(F"{DirConfig.temp_dir}{imgs['IR']}", "PNG")
         # !!!!!!! temp - - - - - - - - -
         analysis_scr = App.get_running_app().sm.get_screen("Analysis")
-        analysis_scr.set_page_refs(imgs,
-                                    DirConfig.temp_dir,
-                                    temp_img=True)
+        analysis_scr.set_page_refs(App.get_running_app().sm.current,
+                                   imgs,
+                                   DirConfig.temp_dir,
+                                   temp_img=True)
         App.get_running_app().sm.current = "Analysis"
 
 
@@ -74,25 +75,28 @@ class AnalysisPage(Screen):
             self.popup = AnalysisQuitPopup(self, "Back")
             self.popup.open()
         else:
-            App.get_running_app().sm.current = \
-             App.get_running_app().sm.previous()
+            App.get_running_app().sm.current = self.prev_screen
 
     def recapture_btn(self):
         self.popup = AnalysisQuitPopup(self, "Recapture")
         self.popup.open()
 
-    def set_page_refs(self, imgs, img_dir, temp_img=False):
+    def set_page_refs(self, prev_screen, imgs, img_dir, temp_img=False):
         """
         Function to set references for images displayed on analysis page.
         *** MUST BE CALLED BEFORE OPENING PAGE ***
 
         Args:
+            prev_screen - str name of the prevously opened screen - allows for
+            back button to work for analysis access via both new capture and
+            project view page.
             imgs - dictionary containing image names for SD and IR images
             img_dir - directory of the images
             temp_img - sets whether images passed are freshly captured,
             therefore warnings must be put inplace to prevent accidental
             deletion (i.e on back button clicked).
         """
+        self.prev_screen = prev_screen
         self.imgs = imgs
         self.img_dir = img_dir
         self.ids.sample_img.source = F"{self.img_dir}{self.imgs['SD']}"
@@ -161,7 +165,7 @@ class AnalysisQuitPopup(Popup):
         if self.btn_function == "Home":
             App.get_running_app().sm.current = "Home"
         else:
-            App.get_running_app().sm.current = "New Capture"
+            App.get_running_app().sm.current = self.holder.prev_screen
 
     def cancel(self):
         pass
