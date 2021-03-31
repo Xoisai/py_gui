@@ -128,7 +128,7 @@ class AnalysisPage(Screen):
                                     imgs=self.imgs)
 
         # Reassign page image refs
-        self.set_page_refs(sample.imgs, sample.path)
+        self.set_page_refs(self.prev_screen, sample.imgs, sample.path)
 
     def delete_imgs(self):
         for type, img in self.imgs.items():
