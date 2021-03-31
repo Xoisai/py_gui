@@ -44,7 +44,7 @@ class NewCapPage(Screen):
         image.save(F"{DirConfig.temp_dir}{imgs['IR']}", "PNG")
         # !!!!!!! temp - - - - - - - - -
         analysis_scr = App.get_running_app().sm.get_screen("Analysis")
-        analysis_scr.set_image_refs(imgs,
+        analysis_scr.set_page_refs(imgs,
                                     DirConfig.temp_dir,
                                     temp_img=True)
         App.get_running_app().sm.current = "Analysis"
@@ -54,7 +54,8 @@ class AnalysisPage(Screen):
     """
     Ref: "Analysis"
 
-    Page with newly captured image.
+    Page showing analystics of image. Can be accessed immediately after image
+    taken, or through project page.
     """
 
     def __init__(self, **kwargs):
@@ -73,13 +74,14 @@ class AnalysisPage(Screen):
             self.popup = AnalysisQuitPopup(self, "Back")
             self.popup.open()
         else:
-            App.get_running_app().sm.current = "New Capture"
+            App.get_running_app().sm.current = \
+             App.get_running_app().sm.previous()
 
     def recapture_btn(self):
         self.popup = AnalysisQuitPopup(self, "Recapture")
         self.popup.open()
 
-    def set_image_refs(self, imgs, img_dir, temp_img=False):
+    def set_page_refs(self, imgs, img_dir, temp_img=False):
         """
         Function to set references for images displayed on analysis page.
         *** MUST BE CALLED BEFORE OPENING PAGE ***
@@ -122,7 +124,7 @@ class AnalysisPage(Screen):
                                     imgs=self.imgs)
 
         # Reassign page image refs
-        self.set_image_refs(sample.imgs, sample.path)
+        self.set_page_refs(sample.imgs, sample.path)
 
     def delete_imgs(self):
         for type, img in self.imgs.items():

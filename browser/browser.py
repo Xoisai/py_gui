@@ -99,7 +99,8 @@ class ProjectViewPage(Screen):
         App.get_running_app().sm.current = "Home"
 
     def back_btn(self):
-        App.get_running_app().sm.current = "Project Browser"
+        App.get_running_app().sm.current = \
+         App.get_running_app().sm.previous()
 
     def set_project(self, p_name):
         """
