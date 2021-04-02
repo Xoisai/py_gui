@@ -196,7 +196,7 @@ class SaveSampleProjectPopup(Popup):
 
     def list_projects(self):
         """
-        Get a list of all projects available to save to
+        Get a list of all projects available to save sample to.
         """
         # Get all project directories in main project dir and sort
         entries = os.scandir(DirConfig.project_dir)
@@ -209,11 +209,29 @@ class SaveSampleProjectPopup(Popup):
             btn.bind(on_release=self.p_btn_click_popup)
             self.ids.p_btn_grid_popup.add_widget(btn)
 
+    def list_projects(self):
+        """
+        Get a list of all projects available to save sample to.
+        """
+        self.ids.project_grid.clear_widgets()  # Clear current button list
+        self.ids.project_grid.add_widget(widgets.ProjectLineHeader())
+
+        # Get all project directories in main project dir and sort
+        entries = os.scandir(DirConfig.project_dir)
+        dirs = [e for e in entries if os.path.isdir(e)]
+        dirs.sort(key=lambda d: d.name.lower())
+
+        for d in dirs:
+            project = data_models.Project(json_path=F"{DirConfig.project_dir}{d.name}/{d.name}.json")
+            project_line = widgets.ProjectLine(project)
+            project_line.bind(on_release=self.p_btn_click_popup)
+            self.ids.project_grid.add_widget(project_line)
+
     def p_btn_click_popup(self, instance):
         """
         Handles initialisation of new popup from project selection.
         """
-        p_selection = instance.text
+        p_selection = instance.ids.p_name.text
         p_json = F"{DirConfig.project_dir}{p_selection}/{p_selection}.json"
         project = data_models.Project(json_path=p_json)
         self.popup = SaveSampleNamePopup(self.holder,
