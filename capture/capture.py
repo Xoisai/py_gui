@@ -113,7 +113,7 @@ class AnalysisPage(Screen):
             follow_action - action to take following save - pass "Back" or
             "Home" for back/home buttons (i.e complete this action after save)
         """
-        self.popup = SaveSamplePopup(self, **kwargs)
+        self.popup = SaveSampleProjectPopup(self, **kwargs)
         self.popup.open()
 
     def save_to_project(self, p_name, s_name):
@@ -171,7 +171,7 @@ class AnalysisQuitPopup(Popup):
         pass
 
 
-class SaveSamplePopup(Popup):
+class SaveSampleProjectPopup(Popup):
     """
     Popup to select project to save sample to, and name sample.
     """
@@ -179,7 +179,7 @@ class SaveSamplePopup(Popup):
     def __init__(self, holder, follow_action=None, **kwargs):
         self.holder = holder
         self.follow_action = follow_action
-        super(SaveSamplePopup, self).__init__(**kwargs)
+        super(SaveSampleProjectPopup, self).__init__(**kwargs)
         self.list_projects()
 
     def list_projects(self):
@@ -198,11 +198,78 @@ class SaveSamplePopup(Popup):
             self.ids.p_btn_grid_popup.add_widget(btn)
 
     def p_btn_click_popup(self, instance):
+        """
+        Handles initialisation of new popup from project selection.
+        """
         p_selection = instance.text
-        s_name = self.s_name
-        self.holder.save_to_project(p_selection, s_name)
-        self.dismiss()
-        if self.follow_action == "Home":
-            App.get_running_app().sm.current = "Home"
-        elif self.follow_action == "Back":
-            App.get_running_app().sm.current = "New Capture"
+        p_json = F"{DirConfig.project_dir}{p_selection}/{p_selection}.json"
+        project = data_models.Project(json_path=p_json)
+        self.popup = SaveSampleNamePopup(self.holder, project)
+        self.popup.title = project.name
+        self.popup.open()
+
+
+
+        # p_selection = instance.text
+        # s_name = self.s_name
+        # self.holder.save_to_project(p_selection, s_name)
+        # self.dismiss()
+        # if self.follow_action == "Home":
+        #     App.get_running_app().sm.current = "Home"
+        # elif self.follow_action == "Back":
+        #     App.get_running_app().sm.current = "New Capture"
+
+class SaveSampleNamePopup(Popup):
+    """
+    Popup to select project to save sample to, and name sample.
+    """
+
+    def __init__(self, holder, project, **kwargs):
+        """
+        Initialise with the projecy required for popup and the holding page
+        (analysis) to allow for sample saving.
+        """
+        self.holder = holder
+        self.project = project
+        super(SaveSampleNamePopup, self).__init__(**kwargs)
+        self.ids.save_s_btn.disabled = True  # Start with disabled save button
+        self.list_samples()
+
+    def list_samples(self):
+        """
+        Search through project sample dict and add a button to popup for
+        each.
+        """
+        self.ids.s_btn_grid.clear_widgets()  # Clear current samples grid
+
+        # Get all samples in project alphabetically and add a button
+        for s_name in sorted(self.project.samples, key=lambda s: s.lower()):
+            # init sample class
+            sample = data_models.Sample(json_path=self.project.samples[s_name])
+            btn = widgets.ThumbnailButton()
+            btn.text = sample.name
+            btn.ids.thumb_img.source = sample.get_image_path("SD")
+            btn.bind(on_release=self.s_btn_click)
+            self.ids.s_btn_grid.add_widget(btn)
+
+    def on_s_name_text(self, s_name):
+        """
+        Validates the sammple name field is not empty.
+        """
+        self.ids.save_s_btn.disabled = False
+        if s_name == "":
+            self.ids.save_s_btn.disabled = True
+
+    def s_btn_click(self, instance):
+        """
+        Handler funciton for clicking a sample in save window, adds name of the
+        selected sample to the save text input.
+        """
+        self.ids.sample_name_input.text = instance.text
+
+    def save_btn(self):
+        """
+        Handler for save button clicked. Check if sample name exists and
+        confirm overwrite required.
+        """
+        print("save")

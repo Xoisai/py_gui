@@ -67,8 +67,8 @@
                     center_y: self.parent.center_y
 
         RelativeLayout:
-            size_hint: 0.3, 0.6
-            pos_hint: {"x": 0.675, "y": 0.35}
+            size_hint: 0.3, 0.7
+            pos_hint: {"x": 0.675, "y": 0.25}
             canvas.before:
                 Color:
                     rgba: layout_background
@@ -80,7 +80,7 @@
                 text: "SAMPLE ANALYSIS STATISTICS"
 
         RelativeLayout:
-            size_hint: 0.3, 0.25
+            size_hint: 0.3, 0.175
             pos_hint: {"x": 0.675, "y": 0.05}
             canvas.before:
                 Color:
@@ -95,7 +95,8 @@
                 cols: 3
 
                 SymbolButton:
-                    text: "Analyse"
+                    font_size: 30
+                    # text: "Analyse"
                     on_release: root.analyse_btn()
                     Image:
                         source: "static/icons/baseline_assessment_white_48dp.png"
@@ -103,13 +104,25 @@
                         center_y: self.parent.center_y
 
                 SymbolButton:
-                    text: "Save"
+                    font_size: 30
+                    # text: "Save"
                     on_release:
                         root.save_btn()
                     Image:
                         source: "static/icons/baseline_save_white_48dp.png"
                         center_x: self.parent.center_x
                         center_y: self.parent.center_y
+
+                SymbolButton:
+                    font_size: 30
+                    # text: "Settings"
+                    on_release:
+                        # root.save_btn()
+                    Image:
+                        source: "static/icons/baseline_settings_white_48dp.png"
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
+
 
 # New project popup form
 <AnalysisQuitPopup>:
@@ -137,35 +150,67 @@
                 root.enter()
 
 # New project popup form
-<SaveSamplePopup>:
+<SaveSampleProjectPopup>:
     auto_dismiss: True
-    size_hint: 0.5, 0.5
+    size_hint: 0.8, 0.8
     pos_hint: {"x_center": 0.5, "y_center": 0.5}
     title: "Select Project"
-    s_name: sample_name_input.text
 
-    GridLayout:
-        cols: 1
-        padding: grid_padding
-        spacing: grid_spacing
+    ScrollView:
+        size_hint: 1.0, 0.9
+        do_scroll_x: False
+        do_scroll_y: True
 
-        TextInput:
-            id: sample_name_input
-            halign: "center"
-            valign: "middle"
-            size_hint: 1.0, 0.15
-            multiline: False
-            hint_text: "Sample Name"
+        GridLayout:
+            id: p_btn_grid_popup
+            size_hint_y: None
+            height: self.minimum_height
+            row_default_height: 60
+            spacing: 20
+            cols: 1
+
+<SaveSampleNamePopup>:
+    sample_name_input: sample_name_input
+    size_hint: 0.8, 0.8
+
+    RelativeLayout:
+
+        BoxLayout:
+            pos_hint: {"center_x": 0.5, "center_y": 0.9}
+            size_hint: 0.95, 0.07
+            spacing: grid_spacing
+            orientation: "horizontal"
+
+            Button:
+                size_hint: 0.2, 1
+                text: "Back"
+                on_release: root.dismiss()
+
+            TextInput:
+                size_hint: 0.6, 1
+                id: sample_name_input
+                halign: "center"
+                valign: "middle"
+                multiline: False
+                hint_text: "Sample Name"
+                on_text: root.on_s_name_text(self.text)
+
+            Button:
+                id: save_s_btn
+                size_hint: 0.2, 1
+                text: "Save"
+                on_release: root.save_btn()
 
         ScrollView:
-            size_hint: 1.0, 0.9
+            size_hint: 0.95, 0.8
+            pos_hint: {"center_x": 0.5, "center_y": 0.425}
             do_scroll_x: False
             do_scroll_y: True
 
             GridLayout:
-                id: p_btn_grid_popup
+                id: s_btn_grid
+                cols: 4
                 size_hint_y: None
                 height: self.minimum_height
-                row_default_height: 60
+                row_default_height: 300
                 spacing: 20
-                cols: 1

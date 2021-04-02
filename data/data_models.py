@@ -30,7 +30,7 @@ class Project():
             self.name = name
             self.path = F"{DirConfig.project_dir}{name}/"
             self.json_path = F"{self.path}{self.name}.json"
-            self.creation_date = datetime.today().strftime("%Y-%m-%d-%H:%M:%S")
+            self.creation_datetime = datetime.today().strftime("%Y-%m-%d-%H:%M:%S")
             self.samples = {}
             self.create_project_dir()
             self.write_json()
@@ -47,7 +47,7 @@ class Project():
         project_dict = {"name": self.name,
                         "path": self.path,
                         "json_path": self.json_path,
-                        "creation_date": self.creation_date,
+                        "creation_datetime": self.creation_datetime,
                         "samples": self.samples}
         return project_dict
 
@@ -64,7 +64,7 @@ class Project():
         self.name = project_dict["name"]
         self.path = project_dict["path"]
         self.json_path = project_dict["json_path"]
-        self.creation_date = project_dict["creation_date"]
+        self.creation_datetime = project_dict["creation_datetime"]
         self.samples = project_dict["samples"]
 
     def write_json(self):
@@ -112,7 +112,7 @@ class Sample():
             self.project_json_path = project.json_path
             self.path = F"{self.project.path}{self.name}/"
             self.json_path = F"{self.path}{self.name}.json"
-            self.creation_date = datetime.today().strftime("%Y-%m-%d-%H:%M:%S")
+            self.creation_datetime = datetime.today().strftime("%Y-%m-%d-%H:%M:%S")
             self.create_sample_dir()
             self.add_images()
             self.write_json()
@@ -145,7 +145,7 @@ class Sample():
                        "project_json_path": self.project_json_path,
                        "path": self.path,
                        "json_path": self.json_path,
-                       "creation_date": self.creation_date}
+                       "creation_datetime": self.creation_datetime}
         return sample_dict
 
     def read_json(self, json_path):
@@ -163,7 +163,7 @@ class Sample():
         self.project_json_path = project_dict["project_json_path"]
         self.path = project_dict["path"]
         self.json_path = project_dict["json_path"]
-        self.creation_date = project_dict["creation_date"]
+        self.creation_datetime = project_dict["creation_datetime"]
 
     def write_json(self):
         """
