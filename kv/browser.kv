@@ -36,25 +36,39 @@
         PageTitle:
             text: "Project Browser"
 
+
+        Button:
+            pos_hint: {"x": 0.8, "y": 0.8}
+            size_hint: 0.15, 0.05
+            text: "Add Project"
+            on_release: root.add_project()
+
+        Button:
+            pos_hint: {"x": 0.6, "y": 0.8}
+            size_hint: 0.15, 0.05
+            text: "Project Settings"
+            on_release: 33
+
         ScrollView:
-            size_hint: 0.6, 0.5
-            pos_hint: {"x": 0.2, "y": 0.25}
+            size_hint: 0.9, 0.7
+            pos_hint: {"center_x": 0.5, "center_y": 0.4}
             do_scroll_x: False
             do_scroll_y: True
+            canvas.before:
+                Color:
+                    rgba: layout_background
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
 
             GridLayout:
-                id: p_btn_grid
+                id: project_grid
                 size_hint_y: None
                 height: self.minimum_height
                 row_default_height: 60
                 spacing: 20
+                padding: 20
                 cols: 1
-
-        Button:
-            pos_hint: {"x": 0.45, "y": 0.1}
-            size_hint: 0.15, 0.1
-            text: "Add Project"
-            on_release: root.add_project()
 
 # - - - - - - - - Project View - - - - - - - -
 

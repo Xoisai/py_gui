@@ -51,3 +51,74 @@
                     source: "static/icons/outline_arrow_back_white_48dp.png"
                     center_x: self.parent.center_x
                     center_y: self.parent.center_y
+
+<ProjectLine>:
+    cols: 4
+    size_hint: (1, 0.1)
+    canvas.before:
+        Color:
+            rgb: (0, 0, 0, 0) if self.state == "normal" else (0.1, 0.5, 0.6, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Image:
+        source: "static/icons/baseline_folder_white_48dp.png"
+        center_x: self.parent.center_x
+        center_y: self.parent.center_y
+        size_hint_x: 0.1
+
+    Label:
+        id: p_name
+        text_size: self.size
+        valign: "middle"
+
+    Label:
+        size_hint_x: 0.3
+        id: c_date
+        text_size: self.size
+        valign: "middle"
+
+    Label:
+        size_hint_x: 0.2
+        id: n_samples
+        text_size: self.size
+        valign: "middle"
+
+<ProjectLineHeader>:
+    cols: 4
+    size_hint: (1, 0.1)
+    # canvas.before:
+    #     Color:
+    #         rgb: (0, 0, 0, 0)
+    #     Rectangle:
+    #         pos: self.pos
+    #         size: self.size
+    canvas.after:
+        Color:
+            rgb: (1, 1, 1, 1)
+        Line:
+            width: 20
+            points: self.x, self.x + self.width
+            # Color:
+            #     rgb: (1, 1, 1, 1)
+
+    Image:
+        size_hint_x: 0.1
+        opacity: 0
+    Label:
+        text_size: self.size
+        text: "Project"
+        valign: "middle"
+
+    Label:
+        text_size: self.size
+        size_hint_x: 0.3
+        text: "Creation Date"
+        valign: "middle"
+
+    Label:
+        text_size: self.size
+        size_hint_x: 0.2
+        text: "Samples"
+        valign: "middle"

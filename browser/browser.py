@@ -33,21 +33,22 @@ class ProjectBrowserPage(Screen):
         self.popup.open()
 
     def list_projects(self):
-        self.ids.p_btn_grid.clear_widgets()  # Clear current button list
+        self.ids.project_grid.clear_widgets()  # Clear current button list
+        self.ids.project_grid.add_widget(widgets.ProjectLineHeader())
 
         # Get all project directories in main project dir and sort
         entries = os.scandir(DirConfig.project_dir)
         dirs = [e for e in entries if os.path.isdir(e)]
         dirs.sort(key=lambda d: d.name.lower())
 
-        # Add button for each project
         for d in dirs:
-            btn = Button(text=d.name)
-            btn.bind(on_release=self.p_btn_click)
-            self.ids.p_btn_grid.add_widget(btn)
+            project = data_models.Project(json_path=F"{DirConfig.project_dir}{d.name}/{d.name}.json")
+            project_line = widgets.ProjectLine(project)
+            project_line.bind(on_release=self.p_btn_click)
+            self.ids.project_grid.add_widget(project_line)
 
     def p_btn_click(self, instance):
-        p_selection = instance.text
+        p_selection = instance.ids.p_name.text
         p_view_scr = App.get_running_app().sm.get_screen("Project View")
         p_view_scr.set_project(p_selection)
         App.get_running_app().sm.transition.direction = "left"
