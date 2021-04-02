@@ -14,3 +14,4 @@ class DirConfig():
     project_dir = file_dir + "projects/"
     temp_dir = file_dir + "temp/"
     kv_dir = BASEDIR + "/kv/"
+    temp_project_json = file_dir + "temp/temp.json"

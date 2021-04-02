@@ -140,7 +140,6 @@ class ProjectViewPage(Screen):
 
         # Prepare analysis page for current sample
         s_view_scr.set_page_refs(App.get_running_app().sm.current,
-                                 sample.imgs,
-                                 sample.path)
+                                 sample)
         App.get_running_app().sm.transition.direction = "left"
         App.get_running_app().sm.current = "Analysis"

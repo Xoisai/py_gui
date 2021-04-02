@@ -127,7 +127,7 @@
 # New project popup form
 <AnalysisQuitPopup>:
     auto_dismiss: True
-    size_hint: 0.5, 0.25
+    size_hint: 0.5, 0.2
     pos_hint: {"x_center": 0.5, "y_center": 0.5}
     title: "The current sample data will be discarded. Would you like to save?"
 
@@ -214,3 +214,15 @@
                 height: self.minimum_height
                 row_default_height: 300
                 spacing: 20
+
+<OverwriteSamplePopup>:
+    size_hint: 0.4, 0.2
+
+    GridLayout:
+        cols: 2
+        Button:
+            text: "Yes"
+            on_release: root.confirm_btn()
+        Button:
+            text: "No"
+            on_release: root.dismiss()

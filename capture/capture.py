@@ -27,27 +27,46 @@ class NewCapPage(Screen):
         App.get_running_app().sm.current = "Home"
 
     def capture_btn(self):
-        # !!!!!!! temp - - - - - - - - -
-        # TEMP - REMOVE ON ACTUAL
-        from PIL import Image
+        """
+        Initialise a sample object and save in the temp directory.
+
+        *****
+
+        1 - create sample object with project as temp
+        2 - pass sample object to analysis page
+        3 - call sample deletion instead of whatever whay we're doing now if we
+        quit analysis page.
+
+
+        """
         capture_datetime = datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
+
+        # Assing names for captured images
         imgs = {"SD": F"SD-{capture_datetime}.png",
                 "IR": F"IR-{capture_datetime}.png"}
+
+        # Init temp project and sample
+        temp_p = data_models.Project(json_path=DirConfig.temp_project_json)
+        sample = data_models.Sample(name=capture_datetime,
+                                    project=temp_p, imgs=imgs)
+
+        # !!!!!!! temp - - - - - - - - -
+        from PIL import Image
         import random
         colour = (random.randint(0, 255),
                   random.randint(0, 255),
                   random.randint(0, 215))
         image = Image.new('RGB', (1000, 1000), colour)
-        image.save(F"{DirConfig.temp_dir}{imgs['SD']}", "PNG")
+        image.save(F"{sample.path}{imgs['SD']}", "PNG")
         colour = (colour[0], colour[1], colour[2]+40)
         image = Image.new('RGB', (1000, 1000), colour)
-        image.save(F"{DirConfig.temp_dir}{imgs['IR']}", "PNG")
+        image.save(F"{sample.path}{imgs['IR']}", "PNG")
         # !!!!!!! temp - - - - - - - - -
+
         analysis_scr = App.get_running_app().sm.get_screen("Analysis")
         analysis_scr.set_page_refs(App.get_running_app().sm.current,
-                                   imgs,
-                                   DirConfig.temp_dir,
-                                   temp_img=True)
+                                   sample,
+                                   temp_sample=True)
         App.get_running_app().sm.current = "Analysis"
 
 
@@ -64,24 +83,20 @@ class AnalysisPage(Screen):
         self.add_widget(widgets.NavBar())
 
     def home_btn(self):
-        if self.temp_img:
+        if self.temp_sample:
             self.popup = AnalysisQuitPopup(self, "Home")
             self.popup.open()
         else:
             App.get_running_app().sm.current = "Home"
 
     def back_btn(self):
-        if self.temp_img:
+        if self.temp_sample:
             self.popup = AnalysisQuitPopup(self, "Back")
             self.popup.open()
         else:
             App.get_running_app().sm.current = self.prev_screen
 
-    def recapture_btn(self):
-        self.popup = AnalysisQuitPopup(self, "Recapture")
-        self.popup.open()
-
-    def set_page_refs(self, prev_screen, imgs, img_dir, temp_img=False):
+    def set_page_refs(self, prev_screen, sample, temp_sample=False):
         """
         Function to set references for images displayed on analysis page.
         *** MUST BE CALLED BEFORE OPENING PAGE ***
@@ -90,17 +105,15 @@ class AnalysisPage(Screen):
             prev_screen - str name of the prevously opened screen - allows for
             back button to work for analysis access via both new capture and
             project view page.
-            imgs - dictionary containing image names for SD and IR images
-            img_dir - directory of the images
-            temp_img - sets whether images passed are freshly captured,
+            sample - sample object for sample to be analysed
+            temp_sample - sets whether images passed are freshly captured,
             therefore warnings must be put inplace to prevent accidental
             deletion (i.e on back button clicked).
         """
         self.prev_screen = prev_screen
-        self.imgs = imgs
-        self.img_dir = img_dir
-        self.ids.sample_img.source = F"{self.img_dir}{self.imgs['SD']}"
-        self.temp_img = temp_img
+        self.sample = sample
+        self.ids.sample_img.source = F"{self.sample.path}{self.sample.imgs['SD']}"
+        self.temp_sample = temp_sample
 
     def analyse_btn(self):
         print("ANALYSIS BUTTON CLICKED")
@@ -116,32 +129,31 @@ class AnalysisPage(Screen):
         self.popup = SaveSampleProjectPopup(self, **kwargs)
         self.popup.open()
 
-    def save_to_project(self, p_name, s_name):
+    def save_to_project(self, project, s_name):
         """
-        Function to take assigned project, instantiate project class and call
-        sample creation method within that project.
+        Function to save sample to passed project.
         """
-        json_path = F"{DirConfig.project_dir}{p_name}/{p_name}.json"
-        project = data_models.Project(json_path=json_path)
-        sample = data_models.Sample(name=s_name,
-                                    project=project,
-                                    imgs=self.imgs)
-
-        # Reassign page image refs
-        self.set_page_refs(self.prev_screen, sample.imgs, sample.path)
+        self.sample.save_to_project(project,
+                                    name=s_name,
+                                    delete=self.temp_sample)
+        self.set_page_refs(self.prev_screen, self.sample)  # Reassign page refs
 
     def delete_imgs(self):
-        for type, img in self.imgs.items():
-            os.remove(F"{DirConfig.temp_dir}{img}")
+        """
+        Called from confirm popup when leaving the Analysis screen on a temp
+        sample.
+        """
+        self.sample.delete_sample()
 
     def hotswap_pic_btn(self):
         """
         Button to swap image between IR and SD imgs.
         """
-        if self.ids.sample_img.source == F"{self.img_dir}{self.imgs['SD']}":
-            self.ids.sample_img.source = F"{self.img_dir}{self.imgs['IR']}"
-        elif self.ids.sample_img.source == F"{self.img_dir}{self.imgs['IR']}":
-            self.ids.sample_img.source = F"{self.img_dir}{self.imgs['SD']}"
+        F"{self.sample.path}{self.sample.imgs['SD']}"
+        if self.ids.sample_img.source == F"{self.sample.path}{self.sample.imgs['SD']}":
+            self.ids.sample_img.source = F"{self.sample.path}{self.sample.imgs['IR']}"
+        elif self.ids.sample_img.source == F"{self.sample.path}{self.sample.imgs['IR']}":
+            self.ids.sample_img.source = F"{self.sample.path}{self.sample.imgs['SD']}"
 
 
 class AnalysisQuitPopup(Popup):
@@ -173,7 +185,7 @@ class AnalysisQuitPopup(Popup):
 
 class SaveSampleProjectPopup(Popup):
     """
-    Popup to select project to save sample to, and name sample.
+    Popup to select project to save sample to.
     """
 
     def __init__(self, holder, follow_action=None, **kwargs):
@@ -204,10 +216,11 @@ class SaveSampleProjectPopup(Popup):
         p_selection = instance.text
         p_json = F"{DirConfig.project_dir}{p_selection}/{p_selection}.json"
         project = data_models.Project(json_path=p_json)
-        self.popup = SaveSampleNamePopup(self.holder, project)
+        self.popup = SaveSampleNamePopup(self.holder,
+                                         project,
+                                         self)
         self.popup.title = project.name
         self.popup.open()
-
 
 
         # p_selection = instance.text
@@ -221,18 +234,26 @@ class SaveSampleProjectPopup(Popup):
 
 class SaveSampleNamePopup(Popup):
     """
-    Popup to select project to save sample to, and name sample.
+    Popup showing project contents and allowing for sample name allocation.
     """
 
-    def __init__(self, holder, project, **kwargs):
+    def __init__(self, holder, project, p_popup, **kwargs):
         """
-        Initialise with the projecy required for popup and the holding page
+        Initialise with the project required for popup and the holding page
         (analysis) to allow for sample saving.
+
+        Args:
+            holder - Analysis page object allowing for save sample method to be
+            called
+            project - selected project object from previous popup
+            p_popup - previous popup object allowing for dismissal on
+            completion
         """
         self.holder = holder
         self.project = project
+        self.p_popup = p_popup
         super(SaveSampleNamePopup, self).__init__(**kwargs)
-        self.ids.save_s_btn.disabled = True  # Start with disabled save button
+        self.ids.save_s_btn.disabled = True  # save btn disabled without input
         self.list_samples()
 
     def list_samples(self):
@@ -254,7 +275,7 @@ class SaveSampleNamePopup(Popup):
 
     def on_s_name_text(self, s_name):
         """
-        Validates the sammple name field is not empty.
+        Deactivates save button if sample name input field is empty.
         """
         self.ids.save_s_btn.disabled = False
         if s_name == "":
@@ -272,4 +293,53 @@ class SaveSampleNamePopup(Popup):
         Handler for save button clicked. Check if sample name exists and
         confirm overwrite required.
         """
-        print("save")
+        self.s_name = self.ids.sample_name_input.text
+
+        # Check if sample name already in project and confirm overwrite
+        if self.s_name in self.project.samples.keys():
+            self.popup = OverwriteSamplePopup(self)
+            self.popup.open()
+        else:
+            self.save_sample(self.s_name)
+            self.dismiss()
+            self.p_popup.dismiss()
+
+    def save_sample(self):
+        """
+        Allows for calling from save_btn function and overwrite popup kv file.
+        """
+        self.holder.save_to_project(self.project, self.s_name)
+        if self.p_popup.follow_action == "Home":
+            App.get_running_app().sm.current = "Home"
+        elif self.p_popup.follow_action == "Back":
+            App.get_running_app().sm.current = "New Capture"
+
+
+class OverwriteSamplePopup(Popup):
+    """
+    Popup to confirm whether sample with the same name should be overwritten.
+    """
+
+    def __init__(self, p_popup, **kwargs):
+        """
+        Initilaise popup with name of sample to be overwritten.
+
+        Args:
+            p_popup - previous popup object, allowing for access to sample
+            details and dismissal
+        """
+        self.p_popup = p_popup
+        super(OverwriteSamplePopup, self).__init__(**kwargs)
+        s_name = p_popup.s_name
+        warn = F"Sample {s_name} will be overwritten. Do you wish to continue?"
+        self.title = warn
+
+    def confirm_btn(self):
+        """
+        Confirms overwrite, closes both popup windows and calls analysis page
+        save function.
+        """
+        self.p_popup.save_sample()
+        self.p_popup.dismiss()
+        self.p_popup.p_popup.dismiss()
+        self.dismiss()

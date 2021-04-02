@@ -83,6 +83,13 @@ class Project():
         self.samples[sample.name] = sample.json_path
         self.write_json()
 
+    def remove_sample(self, s_name):
+        """
+        Remove sample data from project.
+        """
+        del self.samples[s_name]
+        self.write_json()
+
 
 class Sample():
     """
@@ -97,8 +104,6 @@ class Sample():
         Args:
             name - sample name str
             project - project object for parent project
-            imgs - dict containing names of standard ["SD"] and IR ["IR"] img
-            names
             json_path - absolute path to json file containing sample data to
             init from.
         """
@@ -114,7 +119,6 @@ class Sample():
             self.json_path = F"{self.path}{self.name}.json"
             self.creation_datetime = datetime.today().strftime("%Y-%m-%d-%H:%M:%S")
             self.create_sample_dir()
-            self.add_images()
             self.write_json()
 
             # Update parent project to include refs to sample json file
@@ -128,16 +132,6 @@ class Sample():
         # Create directory for project
         if not os.path.exists(self.path):
             os.makedirs(self.path)
-
-    def add_images(self):
-        """
-        Transfers temp storage of images to permanent storage in project dir
-        and renames to given name, then updates imgs class variable.
-        """
-        for type, img in self.imgs.items():
-            shutil.move(F"{DirConfig.temp_dir}{img}",
-                        F"{self.path}{type}-{self.name}.png")
-            self.imgs[type] = F"{type}-{self.name}.png"
 
     def get_sample_dict(self):
         sample_dict = {"name": self.name,
@@ -181,3 +175,56 @@ class Sample():
             return F"{self.path}{self.imgs['SD']}"
         if img_type == "IR":
             return F"{self.path}{self.imgs['IR']}"
+
+    def delete_sample(self):
+        """
+        Delete all sample data.
+        """
+        shutil.rmtree(self.path)
+
+    # def rename(self, name):
+    #     """
+    #     Update sample name. Calls save to project funciton with own project,
+    #     then deletes original sample directory.
+    #     """
+    #     self.name = name
+    #     reassign
+    #     self.write_json()
+
+    def save_to_project(self, project, name=None, delete=False):
+        """
+        Function to save sample to a new project.
+
+        Args:
+            name - new name for sample if rename required. If None, retains
+            current name.
+        """
+        # Retain old sample details to copy images from / delete if needed
+        prev_name = self.name
+        prev_path = self.path
+        prev_project = self.project
+
+        # Assign name if sample needs renaming
+        if name is not None:
+            self.name = name
+
+        # Reassign object vars, create sample folder + json in target project
+        self.project = project
+        self.project_json_path = project.json_path
+        self.path = F"{self.project.path}{self.name}/"
+        self.json_path = F"{self.path}{self.name}.json"
+        self.create_sample_dir()
+        self.write_json()
+
+        # Copy images from previous project to target project
+        for type, img in self.imgs.items():
+            shutil.copy(F"{prev_path}{img}",
+                        F"{self.path}{img}")
+
+        # Add sample to target project data
+        project.add_sample(self)
+
+        # Delete old sample
+        if delete is True:
+            shutil.rmtree(prev_path)
+            prev_project.remove_sample(prev_name)
