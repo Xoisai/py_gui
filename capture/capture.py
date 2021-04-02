@@ -300,7 +300,7 @@ class SaveSampleNamePopup(Popup):
             self.popup = OverwriteSamplePopup(self)
             self.popup.open()
         else:
-            self.save_sample(self.s_name)
+            self.save_sample()
             self.dismiss()
             self.p_popup.dismiss()
 
