@@ -72,18 +72,25 @@
 
     Label:
         id: p_name
+        shorten: True
+        shorten_from: "right"
         text_size: self.size
         valign: "middle"
+
 
     Label:
         size_hint_x: 0.3
         id: c_date
+        shorten: True
+        shorten_from: "right"
         text_size: self.size
         valign: "middle"
 
     Label:
         size_hint_x: 0.2
         id: n_samples
+        shorten: True
+        shorten_from: "right"
         text_size: self.size
         valign: "middle"
 
@@ -96,8 +103,6 @@
         Line:
             width: 20
             points: self.x, self.x + self.width
-            # Color:
-            #     rgb: (1, 1, 1, 1)
 
     Image:
         size_hint_x: 0.1

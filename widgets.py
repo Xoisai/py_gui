@@ -19,6 +19,13 @@ class ThumbnailButton(Button):
     pass
 
 
+class ButtonHtlImg(ButtonBehavior, GridLayout):
+    """
+    Button with text and image, aligned horizontally.
+    """
+    pass
+
+
 class ProjectLine(ButtonBehavior, GridLayout):
     """
     Line to be shown in project browser detailing project name and creation
