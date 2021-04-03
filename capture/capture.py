@@ -214,7 +214,6 @@ class SaveSampleProjectPopup(Popup):
         Get a list of all projects available to save sample to.
         """
         self.ids.project_grid.clear_widgets()  # Clear current button list
-        self.ids.project_grid.add_widget(widgets.ProjectLineHeader())
 
         # Get all project directories in main project dir and sort
         entries = os.scandir(DirConfig.project_dir)

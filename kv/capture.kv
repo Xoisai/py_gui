@@ -156,26 +156,31 @@
     pos_hint: {"x_center": 0.5, "y_center": 0.5}
     title: "Select Project"
 
-    ScrollView:
-        size_hint: 0.9, 0.9
-        pos_hint: {"center_x": 0.5, "center_y": 0.5}
-        do_scroll_x: False
-        do_scroll_y: True
-        canvas.before:
-            Color:
-                rgba: layout_background
-            Rectangle:
-                pos: self.pos
-                size: self.size
+    RelativeLayout:
+        # size_hint: 0.8, 0.8
 
-        GridLayout:
-            id: project_grid
-            size_hint_y: None
-            height: self.minimum_height
-            row_default_height: 60
-            spacing: 20
-            padding: 20
-            cols: 1
+        ProjectLineHeader:
+            pos_hint: {"y": 0.875}
+
+        ScrollView:
+            size_hint_y: 0.875
+            do_scroll_x: False
+            do_scroll_y: True
+            canvas.before:
+                Color:
+                    rgba: layout_background
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            GridLayout:
+                id: project_grid
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: 60
+                spacing: 20
+                padding: 20
+                cols: 1
 
 <SaveSampleNamePopup>:
     sample_name_input: sample_name_input

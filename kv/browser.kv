@@ -61,9 +61,13 @@
                     size_hint_x: 0.4
                     source: "static/icons/baseline_create_new_folder_white_48dp.png"
 
+        ProjectLineHeader:
+            size_hint_x: 0.9
+            pos_hint: {"center_x": 0.5, "y": 0.62}
+
         ScrollView:
-            size_hint: 0.9, 0.65
-            pos_hint: {"center_x": 0.5, "center_y": 0.4}
+            size_hint: 0.9, 0.55
+            pos_hint: {"center_x": 0.5, "center_y": 0.35}
             do_scroll_x: False
             do_scroll_y: True
             canvas.before:

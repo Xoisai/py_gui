@@ -34,7 +34,7 @@ class ProjectBrowserPage(Screen):
 
     def list_projects(self):
         self.ids.project_grid.clear_widgets()  # Clear current button list
-        self.ids.project_grid.add_widget(widgets.ProjectLineHeader())
+        # self.ids.project_grid.add_widget(widgets.ProjectLineHeader())
 
         # Get all project directories in main project dir and sort
         entries = os.scandir(DirConfig.project_dir)
