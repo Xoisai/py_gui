@@ -24,7 +24,14 @@ class NewCapPage(Screen):
         App.get_running_app().sm.current = "Home"
 
     def back_btn(self):
-        App.get_running_app().sm.current = "Home"
+        App.get_running_app().sm.current = self.prev_scr
+
+    def set_page_refs(self, screen):
+        """
+        Set previous pag accessed from, allowing for back button to return to
+        project browser.
+        """
+        self.prev_scr = screen
 
     def capture_btn(self):
         """

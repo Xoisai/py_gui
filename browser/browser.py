@@ -144,3 +144,14 @@ class ProjectViewPage(Screen):
                                  sample)
         App.get_running_app().sm.transition.direction = "left"
         App.get_running_app().sm.current = "Analysis"
+
+    def new_capture_btn(self):
+        """
+        New capture button to move to new capture page.
+        """
+
+        # Prepare new capture page for current project
+        new_cap_scr = App.get_running_app().sm.get_screen("New Capture")
+        new_cap_scr.set_page_refs(App.get_running_app().sm.current)
+        App.get_running_app().sm.transition.direction = "left"
+        App.get_running_app().sm.current = "New Capture"

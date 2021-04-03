@@ -18,6 +18,8 @@ for filename in os.listdir(DirConfig.kv_dir):
 class HomePage(Screen):
 
     def new_cap_btn(self):
+        new_cap_scr = App.get_running_app().sm.get_screen("New Capture")
+        new_cap_scr.set_page_refs(App.get_running_app().sm.current)
         app.sm.current = "New Capture"
 
     def p_browse_btn(self):

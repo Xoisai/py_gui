@@ -96,9 +96,32 @@
         PageTitle:
             id: page_title
 
+        GridLayout:
+            cols: 2
+            size_hint: 0.3, 0.1
+            pos_hint: {"x": 0.6625, "y": 0.725}
+            padding: 20
+            spacing: 20
+
+            ButtonHtlImg:
+                on_release:
+                Label:
+                    text: "Manage"
+                Image:
+                    size_hint_x: 0.4
+                    source: "static/icons/baseline_settings_white_48dp.png"
+
+            ButtonHtlImg:
+                on_release: root.new_capture_btn()
+                Label:
+                    text: "New"
+                Image:
+                    size_hint_x: 0.4
+                    source: "static/icons/baseline_add_a_photo_white_48dp.png"
+
         ScrollView:
-            size_hint: 0.8, 0.75
-            pos_hint: {"center_x": 0.5, "center_y": 0.45}
+            size_hint: 0.9, 0.65
+            pos_hint: {"center_x": 0.5, "center_y": 0.4}
             do_scroll_x: False
             do_scroll_y: True
 
