@@ -30,7 +30,7 @@ class Project():
             self.name = name
             self.path = F"{DirConfig.project_dir}{name}/"
             self.json_path = F"{self.path}{self.name}.json"
-            self.creation_datetime = datetime.today().strftime("%Y-%m-%d-%H:%M:%S")
+            self.creation_datetime = datetime.today().strftime("%d-%m-%Y-%H:%M:%S")
             self.samples = {}
             self.create_project_dir()
             self.write_json()
@@ -117,7 +117,7 @@ class Sample():
             self.project_json_path = project.json_path
             self.path = F"{self.project.path}{self.name}/"
             self.json_path = F"{self.path}{self.name}.json"
-            self.creation_datetime = datetime.today().strftime("%Y-%m-%d-%H:%M:%S")
+            self.creation_datetime = datetime.today().strftime("%d-%m-%Y-%H:%M:%S")
             self.create_sample_dir()
             self.write_json()
 

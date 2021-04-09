@@ -46,7 +46,7 @@ class NewCapPage(Screen):
 
 
         """
-        capture_datetime = datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
+        capture_datetime = datetime.today().strftime("%d-%m-%Y-%H-%M-%S")
 
         # Assing names for captured images
         imgs = {"SD": F"SD-{capture_datetime}.png",

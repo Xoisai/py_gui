@@ -35,8 +35,8 @@ class ProjectLine(ButtonBehavior, GridLayout):
         super(ProjectLine, self).__init__(**kwargs)
         self.ids.p_name.text = project.name
         c_date = datetime.strptime(project.creation_datetime,
-                                   "%Y-%m-%d-%H:%M:%S")
-        self.ids.c_date.text = c_date.strftime("%Y-%m-%d")
+                                   "%d-%m-%Y-%H:%M:%S")
+        self.ids.c_date.text = c_date.strftime("%d-%m-%Y")
         self.ids.n_samples.text = str(len(project.samples))
 
 
