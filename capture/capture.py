@@ -29,7 +29,7 @@ class NewCapPage(Screen):
     def set_page_refs(self, screen):
         """
         Set previous pag accessed from, allowing for back button to return to
-        project browser.
+        project browser or home screen.
         """
         self.prev_scr = screen
 
@@ -43,8 +43,6 @@ class NewCapPage(Screen):
         2 - pass sample object to analysis page
         3 - call sample deletion instead of whatever whay we're doing now if we
         quit analysis page.
-
-
         """
         capture_datetime = datetime.today().strftime("%d-%m-%Y-%H-%M-%S")
 
@@ -205,21 +203,7 @@ class SaveSampleProjectPopup(Popup):
         """
         Get a list of all projects available to save sample to.
         """
-        # Get all project directories in main project dir and sort
-        entries = os.scandir(DirConfig.project_dir)
-        dirs = [e for e in entries if os.path.isdir(e)]
-        dirs.sort(key=lambda d: d.name.lower())
-
-        # Add button for each project
-        for d in dirs:
-            btn = Button(text=d.name)
-            btn.bind(on_release=self.p_btn_click_popup)
-            self.ids.p_btn_grid_popup.add_widget(btn)
-
-    def list_projects(self):
-        """
-        Get a list of all projects available to save sample to.
-        """
+        print("new list_projects")
         self.ids.project_grid.clear_widgets()  # Clear current button list
 
         # Get all project directories in main project dir and sort
