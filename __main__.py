@@ -50,6 +50,3 @@ class TextileGui(App):
 if __name__ == "__main__":
     app = TextileGui()
     app.run()
-
-    # parser = argparse.ArgumentParser
-    # parser.add_argument("--run_mode", "-rm", type=str, default="dev")

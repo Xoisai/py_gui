@@ -2,7 +2,6 @@ import os
 from datetime import datetime
 from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
-from kivy.uix.button import Button
 from kivy.app import App
 from tex_py_gui import widgets
 from tex_py_gui.config import DirConfig
@@ -56,23 +55,25 @@ class NewCapPage(Screen):
                                     project=temp_p, imgs=imgs)
 
         # !!!!!!! temp - - - - - - - - -
-        from picamera import PiCamera
-        camera = PiCamera()
-        camera.start_preview()
-        camera.resolution = (2592, 1944)
-        camera.capture(F"{sample.path}{imgs['SD']}", "PNG")
-        camera.capture(F"{sample.path}{imgs['IR']}", "PNG")
+        if DirConfig.runtype == "dev":
+            from PIL import Image
+            import random
+            colour = (random.randint(0, 255),
+                      random.randint(0, 255),
+                      random.randint(0, 215))
+            image = Image.new('RGB', (1000, 1000), colour)
+            image.save(F"{sample.path}{imgs['SD']}", "PNG")
+            colour = (colour[0], colour[1], colour[2]+40)
+            image = Image.new('RGB', (1000, 1000), colour)
+            image.save(F"{sample.path}{imgs['IR']}", "PNG")
 
-        # from PIL import Image
-        # import random
-        # colour = (random.randint(0, 255),
-        #           random.randint(0, 255),
-        #           random.randint(0, 215))
-        # image = Image.new('RGB', (1000, 1000), colour)
-        # image.save(F"{sample.path}{imgs['SD']}", "PNG")
-        # colour = (colour[0], colour[1], colour[2]+40)
-        # image = Image.new('RGB', (1000, 1000), colour)
-        # image.save(F"{sample.path}{imgs['IR']}", "PNG")
+        elif DirConfig.runtype == "pi":
+            from picamera import PiCamera
+            camera = PiCamera()
+            camera.start_preview()
+            camera.resolution = (2592, 1944)
+            camera.capture(F"{sample.path}{imgs['SD']}.png")
+            camera.capture(F"{sample.path}{imgs['IR']}.png")
         # !!!!!!! temp - - - - - - - - -
 
         analysis_scr = App.get_running_app().sm.get_screen("Analysis")
