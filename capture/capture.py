@@ -70,10 +70,11 @@ class NewCapPage(Screen):
         elif DirConfig.runtype == "pi":
             from picamera import PiCamera
             camera = PiCamera()
-            camera.start_preview()
-            camera.resolution = (2592, 1944)
-            camera.capture(F"{sample.path}{imgs['SD']}.png")
-            camera.capture(F"{sample.path}{imgs['IR']}.png")
+            camera.resolution = (1944, 1944)
+            camera.start_preview(fullscreen=False, window=(198, 33, 553, 540))
+            camera.capture(F"{sample.path}{imgs['SD']}")
+            camera.capture(F"{sample.path}{imgs['IR']}")
+            camera.close()
         # !!!!!!! temp - - - - - - - - -
 
         analysis_scr = App.get_running_app().sm.get_screen("Analysis")

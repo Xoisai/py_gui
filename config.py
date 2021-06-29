@@ -10,7 +10,7 @@ Config.set("graphics", "height", "600")
 
 class DirConfig():
 
-    runtype = "dev"
+    runtype = "pi"
     file_dir = BASEDIR + "/filesys/"
     project_dir = file_dir + "projects/"
     temp_dir = file_dir + "temp/"
