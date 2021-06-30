@@ -35,7 +35,7 @@ class NewCapPage(Screen):
         """
         self.prev_scr = screen
         self.camera = PiCamera()
-        self.camera.resolution = (1944, 1944)
+        # self.camera.resolution = (1944, 1944)
         self.camera.start_preview(fullscreen=False, window=(198, 33, 553, 540))
 
     def capture_btn(self):
