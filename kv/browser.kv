@@ -4,7 +4,7 @@
 # New project popup form
 <NewProjectPopup>:
     auto_dismiss: True
-    size_hint: 0.5, 0.25
+    size_hint: 0.5, 0.27
     pos_hint: {"x": 0.25, "y": 0.4}
     title: "New Project"
     project_name: project_name_input.text
@@ -12,20 +12,20 @@
     BoxLayout:
         size: root.size
         padding: 10
-        spacing: 20
+        spacing: 18
         orientation: "vertical"
         TextInput:
             id: project_name_input
             halign: "center"
             valign: "middle"
-            size_hint: 1.0, 0.1
+            size_hint: 1.0, 0.2
             multiline: False
             hint_text: "Project Name"
             on_text: root.validate_p_name(self.text)
 
         Button:
             id: add_p_btn
-            size_hint: 1.0, 0.1
+            size_hint: 1.0, 0.2
             text: "Add Project"
             on_release: root.enter()
 
@@ -38,7 +38,7 @@
 
         GridLayout:
             cols: 2
-            size_hint: 0.3, 0.1
+            size_hint: 0.3, 0.13
             pos_hint: {"x": 0.6625, "y": 0.725}
             padding: 20
             spacing: 20
