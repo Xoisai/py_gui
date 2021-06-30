@@ -19,9 +19,6 @@ class NewCapPage(Screen):
     def __init__(self, **kwargs):
         super(NewCapPage, self).__init__(**kwargs)
         self.add_widget(widgets.NavBar())
-        self.camera = PiCamera()
-        self.camera.resolution = (1944, 1944)
-        self.camera.start_preview(fullscreen=False, window=(198, 33, 553, 540))
 
     def home_btn(self):
         self.camera.close()
@@ -37,6 +34,9 @@ class NewCapPage(Screen):
         project browser or home screen.
         """
         self.prev_scr = screen
+        self.camera = PiCamera()
+        self.camera.resolution = (1944, 1944)
+        self.camera.start_preview(fullscreen=False, window=(198, 33, 553, 540))
 
     def capture_btn(self):
         """
