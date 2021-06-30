@@ -35,8 +35,8 @@ class NewCapPage(Screen):
         """
         self.prev_scr = screen
         self.camera = PiCamera()
-        # self.camera.resolution = (1944, 1944)
-        self.camera.start_preview(fullscreen=False, window=(198, 33, 553, 540))
+        self.camera.resolution = (600, 600)
+        self.camera.start_preview(fullscreen=False, window=(180, 30, 585, 540))
 
     def capture_btn(self):
         """
@@ -74,8 +74,10 @@ class NewCapPage(Screen):
             image.save(F"{sample.path}{imgs['IR']}", "PNG")
 
         elif DirConfig.runtype == "pi":
+            self.camera.resolution = (1944, 1944)
             self.camera.capture(F"{sample.path}{imgs['SD']}")
             self.camera.capture(F"{sample.path}{imgs['IR']}")
+            self.camera.resolution = (600, 600)
         # !!!!!!! temp - - - - - - - - -
 
         # Close camera preview and move to analysis screen
