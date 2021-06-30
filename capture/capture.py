@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from picamera import PiCamera
 from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
 from kivy.app import App
@@ -18,11 +19,16 @@ class NewCapPage(Screen):
     def __init__(self, **kwargs):
         super(NewCapPage, self).__init__(**kwargs)
         self.add_widget(widgets.NavBar())
+        self.camera = PiCamera()
+        self.camera.resolution = (1944, 1944)
+        self.camera.start_preview(fullscreen=False, window=(198, 33, 553, 540))
 
     def home_btn(self):
+        self.camera.close()
         App.get_running_app().sm.current = "Home"
 
     def back_btn(self):
+        self.camera.close()
         App.get_running_app().sm.current = self.prev_scr
 
     def set_page_refs(self, screen):
@@ -68,15 +74,12 @@ class NewCapPage(Screen):
             image.save(F"{sample.path}{imgs['IR']}", "PNG")
 
         elif DirConfig.runtype == "pi":
-            from picamera import PiCamera
-            camera = PiCamera()
-            camera.resolution = (1944, 1944)
-            camera.start_preview(fullscreen=False, window=(198, 33, 553, 540))
-            camera.capture(F"{sample.path}{imgs['SD']}")
-            camera.capture(F"{sample.path}{imgs['IR']}")
-            camera.close()
+            self.camera.capture(F"{sample.path}{imgs['SD']}")
+            self.camera.capture(F"{sample.path}{imgs['IR']}")
         # !!!!!!! temp - - - - - - - - -
 
+        # Close camera preview and move to analysis screen
+        self.camera.close()
         analysis_scr = App.get_running_app().sm.get_screen("Analysis")
         analysis_scr.set_page_refs(App.get_running_app().sm.current,
                                    sample,
