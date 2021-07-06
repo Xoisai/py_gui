@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from picamera import PiCamera
+# from picamera import PiCamera
 from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
 from kivy.app import App
@@ -21,11 +21,11 @@ class NewCapPage(Screen):
         self.add_widget(widgets.NavBar())
 
     def home_btn(self):
-        self.camera.close()
+        # self.camera.close()
         App.get_running_app().sm.current = "Home"
 
     def back_btn(self):
-        self.camera.close()
+        # self.camera.close()
         App.get_running_app().sm.current = self.prev_scr
 
     def set_page_refs(self, screen):
@@ -34,9 +34,9 @@ class NewCapPage(Screen):
         project browser or home screen.
         """
         self.prev_scr = screen
-        self.camera = PiCamera()
-        self.camera.resolution = (600, 600)
-        self.camera.start_preview(fullscreen=False, window=(180, 30, 585, 540))
+        # self.camera = PiCamera()
+        # self.camera.resolution = (600, 600)
+        # self.camera.start_preview(fullscreen=False, window=(180, 30, 585, 540))
 
     def capture_btn(self):
         """
@@ -73,15 +73,15 @@ class NewCapPage(Screen):
             image = Image.new('RGB', (1000, 1000), colour)
             image.save(F"{sample.path}{imgs['IR']}", "PNG")
 
-        elif DirConfig.runtype == "pi":
-            self.camera.resolution = (1944, 1944)
-            self.camera.capture(F"{sample.path}{imgs['SD']}")
-            self.camera.capture(F"{sample.path}{imgs['IR']}")
-            self.camera.resolution = (600, 600)
+        # elif DirConfig.runtype == "pi":
+            # self.camera.resolution = (1944, 1944)
+            # self.camera.capture(F"{sample.path}{imgs['SD']}")
+            # self.camera.capture(F"{sample.path}{imgs['IR']}")
+            # self.camera.resolution = (600, 600)
         # !!!!!!! temp - - - - - - - - -
 
         # Close camera preview and move to analysis screen
-        self.camera.close()
+        # self.camera.close()
         analysis_scr = App.get_running_app().sm.get_screen("Analysis")
         analysis_scr.set_page_refs(App.get_running_app().sm.current,
                                    sample,
