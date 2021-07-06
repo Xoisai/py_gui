@@ -118,6 +118,7 @@ class Sample():
             self.path = F"{self.project.path}{self.name}/"
             self.json_path = F"{self.path}{self.name}.json"
             self.creation_datetime = datetime.today().strftime("%d-%m-%Y-%H:%M:%S")
+            self.analysed = False
             self.create_sample_dir()
             self.write_json()
 
@@ -139,7 +140,8 @@ class Sample():
                        "project_json_path": self.project_json_path,
                        "path": self.path,
                        "json_path": self.json_path,
-                       "creation_datetime": self.creation_datetime}
+                       "creation_datetime": self.creation_datetime,
+                       "analysed": self.analysed}
         return sample_dict
 
     def read_json(self, json_path):
@@ -148,16 +150,17 @@ class Sample():
         """
         # Read in json file
         f = open(json_path)
-        project_dict = json.load(f)
+        sample_dict = json.load(f)
         f.close()
 
         # Assign to class variables
-        self.name = project_dict["name"]
-        self.imgs = project_dict["imgs"]
-        self.project_json_path = project_dict["project_json_path"]
-        self.path = project_dict["path"]
-        self.json_path = project_dict["json_path"]
-        self.creation_datetime = project_dict["creation_datetime"]
+        self.name = sample_dict["name"]
+        self.imgs = sample_dict["imgs"]
+        self.project_json_path = sample_dict["project_json_path"]
+        self.path = sample_dict["path"]
+        self.json_path = sample_dict["json_path"]
+        self.creation_datetime = sample_dict["creation_datetime"]
+        self.analysed = sample_dict["analysed"]
 
     def write_json(self):
         """
@@ -173,8 +176,8 @@ class Sample():
         """
         if img_type == "SD":
             return F"{self.path}{self.imgs['SD']}"
-        if img_type == "IR":
-            return F"{self.path}{self.imgs['IR']}"
+        if img_type == "AN":
+            return F"{self.path}{self.imgs['AN']}"
 
     def delete_sample(self):
         """

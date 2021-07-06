@@ -53,6 +53,8 @@
 
             # Hotswap button for changing between standard and IR images
             Button:
+                id: hotswap_btn
+                disabled: True
                 size_hint: 0.1, 0.1
                 pos_hint: {"center_x": 0.95, "center_y": 0.05}
                 background_normal: ''
@@ -81,6 +83,7 @@
                 text: "SAMPLE ANALYSIS STATISTICS"
 
         RelativeLayout:
+            id: function_btn_layout
             size_hint: 0.3, 0.175
             pos_hint: {"x": 0.675, "y": 0.05}
             canvas.before:
@@ -91,11 +94,14 @@
                     size: self.size
 
             GridLayout:
+                id: function_btn_grid
                 spacing: grid_spacing
                 padding: grid_padding
                 cols: 3
 
                 SymbolButton:
+                    id: analysis_btn
+                    disabled: False
                     font_size: 30
                     # text: "Analyse"
                     on_release: root.analyse_btn()

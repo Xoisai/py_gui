@@ -2,7 +2,6 @@ import os
 from kivy.app import App
 from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
-from kivy.uix.button import Button
 from kivy.properties import ObjectProperty
 from tex_py_gui.config import DirConfig
 from tex_py_gui import widgets

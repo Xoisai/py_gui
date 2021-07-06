@@ -8,6 +8,9 @@ from tex_py_gui import widgets
 from tex_py_gui.config import DirConfig
 from tex_py_gui.data import data_models
 
+# TEMP!!
+from analysis import analyse
+
 
 class NewCapPage(Screen):
     """
@@ -51,9 +54,8 @@ class NewCapPage(Screen):
         """
         capture_datetime = datetime.today().strftime("%d-%m-%Y-%H-%M-%S")
 
-        # Assing names for captured images
-        imgs = {"SD": F"SD-{capture_datetime}.png",
-                "IR": F"IR-{capture_datetime}.png"}
+        # Assing names for captured image
+        imgs = {"SD": F"SD-{capture_datetime}.png"}
 
         # Init temp project and sample
         temp_p = data_models.Project(json_path=DirConfig.temp_project_json)
@@ -69,9 +71,6 @@ class NewCapPage(Screen):
                       random.randint(0, 215))
             image = Image.new('RGB', (1000, 1000), colour)
             image.save(F"{sample.path}{imgs['SD']}", "PNG")
-            colour = (colour[0], colour[1], colour[2]+40)
-            image = Image.new('RGB', (1000, 1000), colour)
-            image.save(F"{sample.path}{imgs['IR']}", "PNG")
 
         # elif DirConfig.runtype == "pi":
             # self.camera.resolution = (1944, 1944)
@@ -134,8 +133,30 @@ class AnalysisPage(Screen):
         self.ids.sample_img.source = F"{self.sample.path}{self.sample.imgs['SD']}"
         self.temp_sample = temp_sample
 
+        # Check if sample has been analysed to add image switch button
+        if self.sample.analysed:
+            self.ids.hotswap_btn.disabled = False
+            self.ids.analysis_btn.disabled = True
+
+        else:
+            self.ids.hotswap_btn.disabled = True
+            self.ids.analysis_btn.disabled = False
+
     def analyse_btn(self):
-        print("ANALYSIS BUTTON CLICKED")
+        """
+
+        """
+        # Analyse image
+        self.sample.imgs["AN"] = \
+            F"SD-{datetime.today().strftime('%d-%m-%Y-%H-%M-%S')}.png"
+        # TEMP!!!
+        analyse.analyse(self.sample.path, self.sample.imgs["AN"])
+
+        # Check if analysis image available and activate hotswap button
+        if "AN" in self.sample.imgs.keys():
+            self.ids.hotswap_btn.disabled = False
+            self.ids.analysis_btn.disabled = True
+            self.sample.analysed = True
 
     def save_btn(self, **kwargs):
         """
@@ -170,8 +191,8 @@ class AnalysisPage(Screen):
         """
         F"{self.sample.path}{self.sample.imgs['SD']}"
         if self.ids.sample_img.source == F"{self.sample.path}{self.sample.imgs['SD']}":
-            self.ids.sample_img.source = F"{self.sample.path}{self.sample.imgs['IR']}"
-        elif self.ids.sample_img.source == F"{self.sample.path}{self.sample.imgs['IR']}":
+            self.ids.sample_img.source = F"{self.sample.path}{self.sample.imgs['AN']}"
+        elif self.ids.sample_img.source == F"{self.sample.path}{self.sample.imgs['AN']}":
             self.ids.sample_img.source = F"{self.sample.path}{self.sample.imgs['SD']}"
 
 
