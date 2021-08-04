@@ -13,7 +13,8 @@ from tex_py_gui.data import data_models
 # Temp!
 from tex_py_img_processing.image_inferencer import ImageInferencer
 from tex_py_img_processing.image_processor import ImageProcessor
-from tex_py_img_processing.config import PiConfig
+from tex_py_img_processing.postprocessor import Postprocessor
+from tex_py_img_processing.config import DefaultConfig
 
 
 class NewCapPage(Screen):
@@ -58,7 +59,7 @@ class NewCapPage(Screen):
         """
         capture_datetime = datetime.today().strftime("%d-%m-%Y-%H-%M-%S")
 
-        # Assing names for captured image
+        # Assign name for captured image
         imgs = {"SD": F"SD-{capture_datetime}.png"}
 
         # Init temp project and sample
@@ -67,6 +68,18 @@ class NewCapPage(Screen):
                                     project=temp_p, imgs=imgs)
 
         # !!!!!!! temp - - - - - - - - -
+        
+#         NEED TO WORK OUT WHERE THIS IS GOING TO SIT IN THE WHOLE PROCESS FLOW
+        def resize_img(img, scale, dims=None):
+            """
+            Resize an image based on supplied scale factor. If dims arg is
+            passed, will instead resize to dims (width, height).
+            """
+            if dims is None:
+                dims = (int(img.shape[1] * scale), int(img.shape[0] * scale))
+            resized = cv2.resize(img, dims, interpolation=cv2.INTER_AREA)
+            return resized
+        
         if DirConfig.runtype == "dev":
             from PIL import Image
             import random
@@ -76,10 +89,19 @@ class NewCapPage(Screen):
             image = Image.new('RGB', (1000, 1000), colour)
             image.save(F"{sample.path}{imgs['SD']}", "PNG")
 
+#         This is a long and convoluted way of getting a square image. Currently
+#         we can't cature directly into an np array at full resolution, so the
+#         next best method is just to capture, save, read in, modify, delete
+#         original and resave at same path.
         elif DirConfig.runtype == "pi":
-            self.camera.resolution = (1944, 1944)
+            self.camera.resolution = (2050, 1944)
             self.camera.capture(F"{sample.path}{imgs['SD']}")
             self.camera.resolution = (600, 600)
+            img = cv2.imread(F"{sample.path}{imgs['SD']}")
+            img = img[:, 106:]
+            img = resize_img(img, 0.43)
+            os.remove(F"{sample.path}{imgs['SD']}")
+            cv2.imwrite(F"{sample.path}{imgs['SD']}", img)
         # !!!!!!! temp - - - - - - - - -
 
         # Close camera preview and move to analysis screen
@@ -159,18 +181,22 @@ class AnalysisPage(Screen):
         # Create inference and processing instances
         inferencer = ImageInferencer(ModelConfig.model_path, int_quantised=True,
                                      num_threads=4)
-        processor = ImageProcessor(inferencer, config=PiConfig)
+        processor = ImageProcessor(inferencer)
         
-        print(processor.slice_params)
-        
-        # Read in image, process and save
+        # Read in image, run through network
         img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
-        import time
-        s = time.time()
         analysed = processor.analyse_image(img)
-        e = time.time()
-        print(F"analysis took {e-s}s")
-        cv2.imwrite(os.path.join(out_dir, out_name), img_as_ubyte(analysed))
+        
+        # TEMP FAFFY HACKY WAY TO FIX BUG Postprocess network output (********************)
+        src_img = cv2.imread(img_path)  # Update this, simply convert to greyscale above when calling analysis
+#         cv2.imwrite(os.path.join(out_dir, out_name), img_as_ubyte(analysed))
+#         analysed = cv2.imread(os.path.join(out_dir, out_name), cv2.IMREAD_GRAYSCALE)
+        postprocessor = Postprocessor(src_img, img_as_ubyte(analysed))
+#         os.remove(os.path.join(out_dir, out_name))
+        
+        # Save droplet map
+        droplet_map = postprocessor.get_contmap()
+        cv2.imwrite(os.path.join(out_dir, out_name), droplet_map)
 
         # Check if analysis image available and activate hotswap button
         if "AN" in self.sample.imgs.keys():

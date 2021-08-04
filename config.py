@@ -19,6 +19,5 @@ class DirConfig():
     temp_project_json = file_dir + "temp/temp.json"
 
 class ModelConfig():
-    
-    model_path = "/home/pi/Desktop/tflite_benchmarking/models/full_int8.tflite"
-    
+
+    model_path = "/home/pi/IR_modules/demo/models/aw_demo_int8.tflite"
