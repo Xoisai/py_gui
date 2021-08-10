@@ -197,13 +197,26 @@ class AnalysisPage(Screen):
         # Save droplet map
         droplet_map = postprocessor.get_contmap()
         cv2.imwrite(os.path.join(out_dir, out_name), droplet_map)
+        
+        # Display statistics
+        stats_dict = postprocessor.get_droplet_statistics()
+        self.assign_stats(stats_dict)
 
         # Check if analysis image available and activate hotswap button
         if "AN" in self.sample.imgs.keys():
             self.ids.hotswap_btn.disabled = False
             self.ids.analysis_btn.disabled = True
             self.sample.analysed = True
-
+            
+    def assign_stats(self, stats_dict):
+        """
+        Takes statistics dictionary and assigns output to statistics pane.
+        """
+        self.ids.sample_area_cm2.text = str(stats_dict["areas"]["sample_area_cm2"])
+        self.ids.droplet_area_cm2.text = str(stats_dict["areas"]["droplet_area_cm2"])
+        self.ids.sample_coverage.text = str(stats_dict["areas"]["droplet_coverage_perc"])
+        self.ids.droplet_number.text = str(stats_dict["num_droplets"])
+        
     def save_btn(self, **kwargs):
         """
         Save functionality for moving images to a project.

@@ -78,9 +78,84 @@
                 Rectangle:
                     pos: 0, 0
                     size: self.size
-
+            
             Label:
-                text: "SAMPLE ANALYSIS STATISTICS"
+                size_hint_y: 0.2
+                pos_hint: {"center_x": 0.5, "center_y": 0.93}
+                text: "Analysis Statistics"
+                font_size: 20
+                halign: "center"
+                
+            GridLayout:
+                cols: 2
+                pos_hint: {"center_x": 0.5, "center_y": 0.67}
+                size_hint_y: 0.5
+                size_hint_x: 0.9
+                padding: 20
+                canvas.before:
+                    Color:
+                        rgba: (0, 0, 0, 1)
+                    Rectangle:
+                        pos: 10, 10
+                        size: self.width + 5, self.height + 140
+
+                Label:
+                    text: "Sample Area cm2:   "
+                    halign: "right"
+                    text_size: self.size
+                    font_size: 16
+
+                Label:
+                    id: sample_area_cm2
+                    text: "-"
+                    halign: "left"
+                    size_hint_x: 0.4
+                    text_size: self.size
+                    font_size: 16
+
+                Label:
+
+                    text: "Droplet Area cm2:   "
+                    halign: "right"
+                    text_size: self.size
+                    font_size: 16
+
+                Label:
+                    id: droplet_area_cm2
+                    text: "-"
+                    halign: "left"
+                    size_hint_x: 0.4
+                    text_size: self.size
+                    font_size: 16
+
+                Label:
+                    text: "Sample Coverage:   "
+                    halign: "right"
+                    text_size: self.size
+                    font_size: 16
+
+                Label:
+                    id: sample_coverage
+                    text: "-"
+                    halign: "left"
+                    size_hint_x: 0.4
+                    text_size: self.size
+                    font_size: 16
+
+                Label:
+                    text: "Droplet Number:   "
+                    halign: "right"
+                    text_size: self.size
+                    font_size: 16
+
+                Label:
+                    id: droplet_number
+                    text: "-"
+                    halign: "left"
+                    size_hint_x: 0.4
+                    text_size: self.size
+                    font_size: 16
+
 
         RelativeLayout:
             id: function_btn_layout
