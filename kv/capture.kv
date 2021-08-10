@@ -78,29 +78,22 @@
                 Rectangle:
                     pos: 0, 0
                     size: self.size
-            
-            Label:
-                size_hint_y: 0.2
-                pos_hint: {"center_x": 0.5, "center_y": 0.93}
-                text: "Analysis Statistics"
-                font_size: 20
-                halign: "center"
-                
+
             GridLayout:
                 cols: 2
-                pos_hint: {"center_x": 0.5, "center_y": 0.67}
-                size_hint_y: 0.5
+                pos_hint: {"center_x": 0.5, "center_y": 0.235}
+                size_hint_y: 0.4
                 size_hint_x: 0.9
-                padding: 20
+                padding: 10
                 canvas.before:
                     Color:
-                        rgba: (0, 0, 0, 1)
+                        rgba: (0.12, 0.12, 0.12, 1)
                     Rectangle:
-                        pos: 10, 10
-                        size: self.width + 5, self.height + 140
+                        pos: 5, 5
+                        size: self.width + 17, self.height + 242
 
                 Label:
-                    text: "Sample Area cm2:   "
+                    text: "Sample Area (cm\u00B2):   "
                     halign: "right"
                     text_size: self.size
                     font_size: 16
@@ -115,7 +108,7 @@
 
                 Label:
 
-                    text: "Droplet Area cm2:   "
+                    text: "Droplet Area (cm\u00B2):   "
                     halign: "right"
                     text_size: self.size
                     font_size: 16
@@ -143,6 +136,20 @@
                     font_size: 16
 
                 Label:
+                    text: "Avg. Droplet Size:   "
+                    halign: "right"
+                    text_size: self.size
+                    font_size: 16
+
+                Label:
+                    id: avg_droplet_size
+                    text: "-"
+                    halign: "left"
+                    size_hint_x: 0.4
+                    text_size: self.size
+                    font_size: 16
+
+                Label:
                     text: "Droplet Number:   "
                     halign: "right"
                     text_size: self.size
@@ -155,7 +162,20 @@
                     size_hint_x: 0.4
                     text_size: self.size
                     font_size: 16
+                    
+            Label:
+                size_hint_y: 0.2
+                pos_hint: {"center_x": 0.5, "center_y": 0.945}
+                text: "Analysis Statistics"
+                font_size: 13
+                halign: "center"
 
+        RelativeLayout:
+            size_hint: 0.3, 0.34
+            pos_hint: {"center_x": 0.825, "center_y": 0.735}
+
+            Image:
+                id: droplet_hist
 
         RelativeLayout:
             id: function_btn_layout

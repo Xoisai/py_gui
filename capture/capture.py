@@ -1,5 +1,6 @@
 import os
 import cv2
+import matplotlib.pyplot as plt
 from skimage import img_as_ubyte
 from datetime import datetime
 from picamera import PiCamera
@@ -156,12 +157,14 @@ class AnalysisPage(Screen):
         self.prev_screen = prev_screen
         self.sample = sample
         self.ids.sample_img.source = F"{self.sample.path}{self.sample.imgs['SD']}"
+        self.ids.droplet_hist.source = "static/hist_template.png"
         self.temp_sample = temp_sample
 
         # Check if sample has been analysed to add image switch button
         if self.sample.analysed:
             self.ids.hotswap_btn.disabled = False
             self.ids.analysis_btn.disabled = True
+            self.ids.droplet_hist.source = F"{self.sample.path}{self.sample.imgs['HS']}"
 
         else:
             self.ids.hotswap_btn.disabled = True
@@ -177,6 +180,8 @@ class AnalysisPage(Screen):
         out_dir = self.sample.path
         out_name = F"AN-{datetime.today().strftime('%d-%m-%Y-%H-%M-%S')}.png"
         self.sample.imgs["AN"] = out_name
+        hist_name = F"HS-{datetime.today().strftime('%d-%m-%Y-%H-%M-%S')}.png"
+        self.sample.imgs["HS"] = hist_name
         
         # Create inference and processing instances
         inferencer = ImageInferencer(ModelConfig.model_path, int_quantised=True,
@@ -198,6 +203,11 @@ class AnalysisPage(Screen):
         droplet_map = postprocessor.get_contmap()
         cv2.imwrite(os.path.join(out_dir, out_name), droplet_map)
         
+        # Save droplet histogram and add to analysis page
+        hist = postprocessor.get_droplet_histogram()
+        hist.savefig(os.path.join(out_dir, hist_name))
+        self.ids.droplet_hist.source = os.path.join(out_dir, hist_name)
+        
         # Display statistics
         stats_dict = postprocessor.get_droplet_statistics()
         self.assign_stats(stats_dict)
@@ -215,6 +225,7 @@ class AnalysisPage(Screen):
         self.ids.sample_area_cm2.text = str(stats_dict["areas"]["sample_area_cm2"])
         self.ids.droplet_area_cm2.text = str(stats_dict["areas"]["droplet_area_cm2"])
         self.ids.sample_coverage.text = str(stats_dict["areas"]["droplet_coverage_perc"])
+        self.ids.avg_droplet_size.text = str(stats_dict["areas"]["droplet_area_mean_cm2"])
         self.ids.droplet_number.text = str(stats_dict["num_droplets"])
         
     def save_btn(self, **kwargs):
