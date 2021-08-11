@@ -169,6 +169,14 @@ class AnalysisPage(Screen):
         else:
             self.ids.hotswap_btn.disabled = True
             self.ids.analysis_btn.disabled = False
+            
+    def activate_loading_gif(self):
+        self.ids.loading_icon.opacity = 1.0
+        self.ids.analysis_btn_icon.opacity = 0.0
+        
+    def deactivate_loading_gif(self):
+        self.ids.loading_icon.opacity = 0.0
+        self.ids.analysis_btn_icon.opacity = 1.0
 
     def analyse_btn(self):
         """

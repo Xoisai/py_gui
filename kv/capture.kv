@@ -199,9 +199,22 @@
                     disabled: False
                     font_size: 30
                     # text: "Analyse"
-                    on_release: root.analyse_btn()
+                    on_press:
+                        root.activate_loading_gif()
+                    on_release:
+                        root.analyse_btn()
+                        root.deactivate_loading_gif()
                     Image:
+                        id: analysis_btn_icon
                         source: "static/icons/baseline_assessment_white_48dp.png"
+                        size: 50, 50
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
+
+                    Image:
+                        id: loading_icon
+                        opacity: 0.0
+                        source: "static/icons/baseline_hourglass_empty_white_48dp.png"
                         size: 50, 50
                         center_x: self.parent.center_x
                         center_y: self.parent.center_y
