@@ -7,6 +7,7 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 # Config.set("graphics", "width", "1024")
 # Config.set("graphics", "height", "600")
 Config.set('graphics', 'fullscreen', 1)
+Config.set('graphics','show_cursor','0')
 
 
 class DirConfig():
