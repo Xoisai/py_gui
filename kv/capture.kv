@@ -234,7 +234,7 @@
                     font_size: 30
                     # text: "Settings"
                     on_release:
-                        # root.save_btn()
+                        root.settings_btn()
                     Image:
                         source: "static/icons/baseline_settings_white_48dp.png"
                         size: 50, 50
@@ -357,3 +357,63 @@
         Button:
             text: "No"
             on_release: root.dismiss()
+
+
+<AnalysisSettingsPopup>:
+    auto_dismiss: True
+    size_hint: 0.6, 0.3
+    pos_hint: {"x_center": 0.5, "y_center": 0.5}
+    title: "Analysis Settings"
+
+    RelativeLayout:
+
+        ScrollView:
+            size_hint_y: 0.96
+            do_scroll_x: False
+            do_scroll_y: True
+            canvas.before:
+                Color:
+                    rgba: layout_background
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            GridLayout:
+                cols: 1
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: 60
+                spacing: 20
+                padding: 20
+                cols: 1
+
+                BoxLayout:
+                    padding: 10
+                    spacing: 10
+                    Label:
+                        text: "Analysis Type: "
+                    ToggleButton:
+                        font_size: 14
+                        size_hint: None, None
+                        size: 0.2 * root.width, 0.2 * root.height
+                        pos: 0.125 * root.width, 0.350 * root.height
+                        text: "Hydrophobic"
+                        group: "analysis_type"
+                        state: "down"
+                        on_release: root.toggle_model_type("hydrophobic")
+                    ToggleButton:
+                        font_size: 14
+                        size_hint: None, None
+                        size: 0.2 * root.width, 0.2 * root.height
+                        pos: 0.125 * root.width, 0.350 * root.height
+                        text: "Surface"
+                        group: "analysis_type"
+                        on_release: root.toggle_model_type("surface")
+                    ToggleButton:
+                        font_size: 14
+                        size_hint: None, None
+                        size: 0.2 * root.width, 0.2 * root.height
+                        pos: 0.125 * root.width, 0.350 * root.height
+                        text: "Wicking"
+                        group: "analysis_type"
+                        on_release: root.toggle_model_type("wicking")

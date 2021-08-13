@@ -125,6 +125,7 @@ class AnalysisPage(Screen):
     def __init__(self, **kwargs):
         super(AnalysisPage, self).__init__(**kwargs)
         self.add_widget(widgets.NavBar())
+        self.model_path = ModelConfig.model_paths["hydrophobic"]
 
     def home_btn(self):
         if self.temp_sample:
@@ -192,7 +193,7 @@ class AnalysisPage(Screen):
         self.sample.imgs["HS"] = hist_name
         
         # Create inference and processing instances
-        inferencer = ImageInferencer(ModelConfig.model_path, int_quantised=True,
+        inferencer = ImageInferencer(self.model_path, int_quantised=True,
                                      num_threads=4)
         processor = ImageProcessor(inferencer)
         
@@ -262,6 +263,13 @@ class AnalysisPage(Screen):
         sample.
         """
         self.sample.delete_sample()
+        
+    def settings_btn(self, **kwargs):
+        """
+        Triggers popup with analysis settings.
+        """
+        self.popup = AnalysisSettingsPopup(self, **kwargs)
+        self.popup.open()
 
     def hotswap_pic_btn(self):
         """
@@ -272,6 +280,13 @@ class AnalysisPage(Screen):
             self.ids.sample_img.source = F"{self.sample.path}{self.sample.imgs['AN']}"
         elif self.ids.sample_img.source == F"{self.sample.path}{self.sample.imgs['AN']}":
             self.ids.sample_img.source = F"{self.sample.path}{self.sample.imgs['SD']}"
+            
+    def update_model(self, model_type):
+        """
+        Function to take a model type string and update the currently used
+        model.
+        """
+        self.model_path = ModelConfig.model_paths[model_type]
 
 
 class AnalysisQuitPopup(Popup):
@@ -464,3 +479,19 @@ class OverwriteSamplePopup(Popup):
         self.p_popup.dismiss()
         self.p_popup.p_popup.dismiss()
         self.dismiss()
+        
+class AnalysisSettingsPopup(Popup):
+    """
+    Popup to select project to save sample to.
+    """
+
+    def __init__(self, holder, **kwargs):
+        self.holder = holder
+        super(AnalysisSettingsPopup, self).__init__(**kwargs)
+
+    def toggle_model_type(self, model_type):
+        """
+        Function to call analysis page model path update function for
+        subsequent analysis.
+        """
+        self.holder.update_model(model_type)
