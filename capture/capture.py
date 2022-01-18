@@ -61,16 +61,15 @@ class NewCapPage(Screen):
         capture_datetime = datetime.today().strftime("%d-%m-%Y-%H-%M-%S")
 
         # Assign name for captured image
-        imgs = {"SD": F"SD-{capture_datetime}.png"}
+        imgs = {"SD": f"SD-{capture_datetime}.png"}
 
         # Init temp project and sample
         temp_p = data_models.Project(json_path=DirConfig.temp_project_json)
-        sample = data_models.Sample(name=capture_datetime,
-                                    project=temp_p, imgs=imgs)
+        sample = data_models.Sample(name=capture_datetime, project=temp_p, imgs=imgs)
 
         # !!!!!!! temp - - - - - - - - -
-        
-#         NEED TO WORK OUT WHERE THIS IS GOING TO SIT IN THE WHOLE PROCESS FLOW
+
+        #         NEED TO WORK OUT WHERE THIS IS GOING TO SIT IN THE WHOLE PROCESS FLOW
         def resize_img(img, scale, dims=None):
             """
             Resize an image based on supplied scale factor. If dims arg is
@@ -78,39 +77,41 @@ class NewCapPage(Screen):
             """
             if dims is None:
                 dims = (int(img.shape[1] * scale), int(img.shape[0] * scale))
-            resized = cv2.resize(img, dims, interpolation=cv2.INTER_AREA)
-            return resized
-        
+            return cv2.resize(img, dims, interpolation=cv2.INTER_AREA)
+
         if DirConfig.runtype == "dev":
             from PIL import Image
             import random
-            colour = (random.randint(0, 255),
-                      random.randint(0, 255),
-                      random.randint(0, 215))
-            image = Image.new('RGB', (1000, 1000), colour)
-            image.save(F"{sample.path}{imgs['SD']}", "PNG")
 
-#         This is a long and convoluted way of getting a square image. Currently
-#         we can't cature directly into an np array at full resolution, so the
-#         next best method is just to capture, save, read in, modify, delete
-#         original and resave at same path.
+            colour = (
+                random.randint(0, 255),
+                random.randint(0, 255),
+                random.randint(0, 215),
+            )
+            image = Image.new("RGB", (1000, 1000), colour)
+            image.save(f"{sample.path}{imgs['SD']}", "PNG")
+
+        #         This is a long and convoluted way of getting a square image. Currently
+        #         we can't cature directly into an np array at full resolution, so the
+        #         next best method is just to capture, save, read in, modify, delete
+        #         original and resave at same path.
         elif DirConfig.runtype == "pi":
             self.camera.resolution = (2050, 1944)
-            self.camera.capture(F"{sample.path}{imgs['SD']}")
+            self.camera.capture(f"{sample.path}{imgs['SD']}")
             self.camera.resolution = (600, 600)
-            img = cv2.imread(F"{sample.path}{imgs['SD']}")
+            img = cv2.imread(f"{sample.path}{imgs['SD']}")
             img = img[:, 106:]
             img = resize_img(img, 0.43)
-            os.remove(F"{sample.path}{imgs['SD']}")
-            cv2.imwrite(F"{sample.path}{imgs['SD']}", img)
+            os.remove(f"{sample.path}{imgs['SD']}")
+            cv2.imwrite(f"{sample.path}{imgs['SD']}", img)
         # !!!!!!! temp - - - - - - - - -
 
         # Close camera preview and move to analysis screen
         self.camera.close()
         analysis_scr = App.get_running_app().sm.get_screen("Analysis")
-        analysis_scr.set_page_refs(App.get_running_app().sm.current,
-                                   sample,
-                                   temp_sample=True)
+        analysis_scr.set_page_refs(
+            App.get_running_app().sm.current, sample, temp_sample=True
+        )
         App.get_running_app().sm.current = "Analysis"
 
 
@@ -157,7 +158,7 @@ class AnalysisPage(Screen):
         """
         self.prev_screen = prev_screen
         self.sample = sample
-        self.ids.sample_img.source = F"{self.sample.path}{self.sample.imgs['SD']}"
+        self.ids.sample_img.source = f"{self.sample.path}{self.sample.imgs['SD']}"
         self.ids.droplet_hist.source = "static/hist_template.png"
         self.temp_sample = temp_sample
 
@@ -165,58 +166,57 @@ class AnalysisPage(Screen):
         if self.sample.analysed:
             self.ids.hotswap_btn.disabled = False
             self.ids.analysis_btn.disabled = True
-            self.ids.droplet_hist.source = F"{self.sample.path}{self.sample.imgs['HS']}"
+            self.ids.droplet_hist.source = f"{self.sample.path}{self.sample.imgs['HS']}"
 
         else:
             self.ids.hotswap_btn.disabled = True
             self.ids.analysis_btn.disabled = False
-            
+
     def activate_loading_gif(self):
         self.ids.loading_icon.opacity = 1.0
         self.ids.analysis_btn_icon.opacity = 0.0
-        
+
     def deactivate_loading_gif(self):
         self.ids.loading_icon.opacity = 0.0
         self.ids.analysis_btn_icon.opacity = 1.0
 
     def analyse_btn(self):
-        """
-
-        """
+        """ """
         # Analyse image
         # TEMP!!!
-        img_path =  F"{self.sample.path}{self.sample.imgs['SD']}"
+        img_path = f"{self.sample.path}{self.sample.imgs['SD']}"
         out_dir = self.sample.path
-        out_name = F"AN-{datetime.today().strftime('%d-%m-%Y-%H-%M-%S')}.png"
+        out_name = f"AN-{datetime.today().strftime('%d-%m-%Y-%H-%M-%S')}.png"
         self.sample.imgs["AN"] = out_name
-        hist_name = F"HS-{datetime.today().strftime('%d-%m-%Y-%H-%M-%S')}.png"
+        hist_name = f"HS-{datetime.today().strftime('%d-%m-%Y-%H-%M-%S')}.png"
         self.sample.imgs["HS"] = hist_name
-        
+
         # Create inference and processing instances
-        inferencer = ImageInferencer(self.model_path, int_quantised=True,
-                                     num_threads=4)
+        inferencer = ImageInferencer(self.model_path, int_quantised=True, num_threads=4)
         processor = ImageProcessor(inferencer)
-        
+
         # Read in image, run through network
         img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
         analysed = processor.analyse_image(img)
-        
+
         # TEMP FAFFY HACKY WAY TO FIX BUG Postprocess network output (********************)
-        src_img = cv2.imread(img_path)  # Update this, simply convert to greyscale above when calling analysis
-#         cv2.imwrite(os.path.join(out_dir, out_name), img_as_ubyte(analysed))
-#         analysed = cv2.imread(os.path.join(out_dir, out_name), cv2.IMREAD_GRAYSCALE)
+        src_img = cv2.imread(
+            img_path
+        )  # Update this, simply convert to greyscale above when calling analysis
+        #         cv2.imwrite(os.path.join(out_dir, out_name), img_as_ubyte(analysed))
+        #         analysed = cv2.imread(os.path.join(out_dir, out_name), cv2.IMREAD_GRAYSCALE)
         postprocessor = Postprocessor(src_img, img_as_ubyte(analysed))
-#         os.remove(os.path.join(out_dir, out_name))
-        
+        #         os.remove(os.path.join(out_dir, out_name))
+
         # Save droplet map
         droplet_map = postprocessor.get_contmap()
         cv2.imwrite(os.path.join(out_dir, out_name), droplet_map)
-        
+
         # Save droplet histogram and add to analysis page
         hist = postprocessor.get_droplet_histogram()
         hist.savefig(os.path.join(out_dir, hist_name))
         self.ids.droplet_hist.source = os.path.join(out_dir, hist_name)
-        
+
         # Display statistics
         stats_dict = postprocessor.get_droplet_statistics()
         self.assign_stats(stats_dict)
@@ -226,17 +226,21 @@ class AnalysisPage(Screen):
             self.ids.hotswap_btn.disabled = False
             self.ids.analysis_btn.disabled = True
             self.sample.analysed = True
-            
+
     def assign_stats(self, stats_dict):
         """
         Takes statistics dictionary and assigns output to statistics pane.
         """
         self.ids.sample_area_cm2.text = str(stats_dict["areas"]["sample_area_cm2"])
         self.ids.droplet_area_cm2.text = str(stats_dict["areas"]["droplet_area_cm2"])
-        self.ids.sample_coverage.text = str(stats_dict["areas"]["droplet_coverage_perc"])
-        self.ids.avg_droplet_size.text = str(stats_dict["areas"]["droplet_area_mean_cm2"])
+        self.ids.sample_coverage.text = str(
+            stats_dict["areas"]["droplet_coverage_perc"]
+        )
+        self.ids.avg_droplet_size.text = str(
+            stats_dict["areas"]["droplet_area_mean_cm2"]
+        )
         self.ids.droplet_number.text = str(stats_dict["num_droplets"])
-        
+
     def save_btn(self, **kwargs):
         """
         Save functionality for moving images to a project.
@@ -252,9 +256,7 @@ class AnalysisPage(Screen):
         """
         Function to save sample to passed project.
         """
-        self.sample.save_to_project(project,
-                                    name=s_name,
-                                    delete=self.temp_sample)
+        self.sample.save_to_project(project, name=s_name, delete=self.temp_sample)
         self.set_page_refs(self.prev_screen, self.sample)  # Reassign page refs
 
     def delete_imgs(self):
@@ -263,7 +265,7 @@ class AnalysisPage(Screen):
         sample.
         """
         self.sample.delete_sample()
-        
+
     def settings_btn(self, **kwargs):
         """
         Triggers popup with analysis settings.
@@ -275,12 +277,14 @@ class AnalysisPage(Screen):
         """
         Button to swap image between IR and SD imgs.
         """
-        F"{self.sample.path}{self.sample.imgs['SD']}"
-        if self.ids.sample_img.source == F"{self.sample.path}{self.sample.imgs['SD']}":
-            self.ids.sample_img.source = F"{self.sample.path}{self.sample.imgs['AN']}"
-        elif self.ids.sample_img.source == F"{self.sample.path}{self.sample.imgs['AN']}":
-            self.ids.sample_img.source = F"{self.sample.path}{self.sample.imgs['SD']}"
-            
+        f"{self.sample.path}{self.sample.imgs['SD']}"
+        if self.ids.sample_img.source == f"{self.sample.path}{self.sample.imgs['SD']}":
+            self.ids.sample_img.source = f"{self.sample.path}{self.sample.imgs['AN']}"
+        elif (
+            self.ids.sample_img.source == f"{self.sample.path}{self.sample.imgs['AN']}"
+        ):
+            self.ids.sample_img.source = f"{self.sample.path}{self.sample.imgs['SD']}"
+
     def update_model(self, model_type):
         """
         Function to take a model type string and update the currently used
@@ -340,7 +344,9 @@ class SaveSampleProjectPopup(Popup):
         dirs.sort(key=lambda d: d.name.lower())
 
         for d in dirs:
-            project = data_models.Project(json_path=F"{DirConfig.project_dir}{d.name}/{d.name}.json")
+            project = data_models.Project(
+                json_path=f"{DirConfig.project_dir}{d.name}/{d.name}.json"
+            )
             project_line = widgets.ProjectLine(project)
             project_line.bind(on_release=self.p_btn_click_popup)
             self.ids.project_grid.add_widget(project_line)
@@ -350,14 +356,11 @@ class SaveSampleProjectPopup(Popup):
         Handles initialisation of new popup from project selection.
         """
         p_selection = instance.ids.p_name.text
-        p_json = F"{DirConfig.project_dir}{p_selection}/{p_selection}.json"
+        p_json = f"{DirConfig.project_dir}{p_selection}/{p_selection}.json"
         project = data_models.Project(json_path=p_json)
-        self.popup = SaveSampleNamePopup(self.holder,
-                                         project,
-                                         self)
+        self.popup = SaveSampleNamePopup(self.holder, project, self)
         self.popup.title = project.name
         self.popup.open()
-
 
         # p_selection = instance.text
         # s_name = self.s_name
@@ -367,6 +370,7 @@ class SaveSampleProjectPopup(Popup):
         #     App.get_running_app().sm.current = "Home"
         # elif self.follow_action == "Back":
         #     App.get_running_app().sm.current = "New Capture"
+
 
 class SaveSampleNamePopup(Popup):
     """
@@ -467,7 +471,7 @@ class OverwriteSamplePopup(Popup):
         self.p_popup = p_popup
         super(OverwriteSamplePopup, self).__init__(**kwargs)
         s_name = p_popup.s_name
-        warn = F"Sample {s_name} will be overwritten. Do you wish to continue?"
+        warn = f"Sample {s_name} will be overwritten. Do you wish to continue?"
         self.title = warn
 
     def confirm_btn(self):
@@ -479,7 +483,8 @@ class OverwriteSamplePopup(Popup):
         self.p_popup.dismiss()
         self.p_popup.p_popup.dismiss()
         self.dismiss()
-        
+
+
 class AnalysisSettingsPopup(Popup):
     """
     Popup to select project to save sample to.

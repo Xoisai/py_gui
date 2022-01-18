@@ -9,7 +9,7 @@ from datetime import datetime
 from tex_py_gui.config import DirConfig
 
 
-class Project():
+class Project:
     """
     Project object.
     """
@@ -28,8 +28,8 @@ class Project():
             self.read_json(json_path)
         else:
             self.name = name
-            self.path = F"{DirConfig.project_dir}{name}/"
-            self.json_path = F"{self.path}{self.name}.json"
+            self.path = f"{DirConfig.project_dir}{name}/"
+            self.json_path = f"{self.path}{self.name}.json"
             self.creation_datetime = datetime.today().strftime("%d-%m-%Y-%H:%M:%S")
             self.samples = {}
             self.create_project_dir()
@@ -44,21 +44,21 @@ class Project():
             os.makedirs(self.path)
 
     def get_project_dict(self):
-        project_dict = {"name": self.name,
-                        "path": self.path,
-                        "json_path": self.json_path,
-                        "creation_datetime": self.creation_datetime,
-                        "samples": self.samples}
-        return project_dict
+        return {
+            "name": self.name,
+            "path": self.path,
+            "json_path": self.json_path,
+            "creation_datetime": self.creation_datetime,
+            "samples": self.samples,
+        }
 
     def read_json(self, json_path):
         """
         Read in json file to assign class attributes.
         """
         # Read in json file
-        f = open(json_path)
-        project_dict = json.load(f)
-        f.close()
+        with open(json_path) as f:
+            project_dict = json.load(f)
 
         # Assign to class variables
         self.name = project_dict["name"]
@@ -72,7 +72,7 @@ class Project():
         Function to write project information to a json file in the project
         dir.
         """
-        with open(self.json_path, 'w') as f:
+        with open(self.json_path, "w") as f:
             json.dump(self.get_project_dict(), f)
 
     def add_sample(self, sample):
@@ -91,7 +91,7 @@ class Project():
         self.write_json()
 
 
-class Sample():
+class Sample:
     """
     Sample object.
     """
@@ -115,8 +115,8 @@ class Sample():
             self.imgs = imgs
             self.project = project
             self.project_json_path = project.json_path
-            self.path = F"{self.project.path}{self.name}/"
-            self.json_path = F"{self.path}{self.name}.json"
+            self.path = f"{self.project.path}{self.name}/"
+            self.json_path = f"{self.path}{self.name}.json"
             self.creation_datetime = datetime.today().strftime("%d-%m-%Y-%H:%M:%S")
             self.analysed = False
             self.create_sample_dir()
@@ -135,24 +135,23 @@ class Sample():
             os.makedirs(self.path)
 
     def get_sample_dict(self):
-        sample_dict = {"name": self.name,
-                       "imgs": self.imgs,
-                       "project_json_path": self.project_json_path,
-                       "path": self.path,
-                       "json_path": self.json_path,
-                       "creation_datetime": self.creation_datetime,
-                       "analysed": self.analysed}
-        return sample_dict
+        return {
+            "name": self.name,
+            "imgs": self.imgs,
+            "project_json_path": self.project_json_path,
+            "path": self.path,
+            "json_path": self.json_path,
+            "creation_datetime": self.creation_datetime,
+            "analysed": self.analysed,
+        }
 
     def read_json(self, json_path):
         """
         Read in json file to assign class attributes.
         """
         # Read in json file
-        f = open(json_path)
-        sample_dict = json.load(f)
-        f.close()
-
+        with open(json_path) as f:
+            sample_dict = json.load(f)
         # Assign to class variables
         self.name = sample_dict["name"]
         self.imgs = sample_dict["imgs"]
@@ -166,7 +165,7 @@ class Sample():
         """
         Writes sample data to json file in sample directory.
         """
-        with open(self.json_path, 'w') as f:
+        with open(self.json_path, "w") as f:
             json.dump(self.get_sample_dict(), f)
 
     def get_image_path(self, img_type):
@@ -175,9 +174,9 @@ class Sample():
         retrieve.
         """
         if img_type == "SD":
-            return F"{self.path}{self.imgs['SD']}"
+            return f"{self.path}{self.imgs['SD']}"
         if img_type == "AN":
-            return F"{self.path}{self.imgs['AN']}"
+            return f"{self.path}{self.imgs['AN']}"
 
     def delete_sample(self):
         """
@@ -214,15 +213,14 @@ class Sample():
         # Reassign object vars, create sample folder + json in target project
         self.project = project
         self.project_json_path = project.json_path
-        self.path = F"{self.project.path}{self.name}/"
-        self.json_path = F"{self.path}{self.name}.json"
+        self.path = f"{self.project.path}{self.name}/"
+        self.json_path = f"{self.path}{self.name}.json"
         self.create_sample_dir()
         self.write_json()
 
         # Copy images from previous project to target project
         for type, img in self.imgs.items():
-            shutil.copy(F"{prev_path}{img}",
-                        F"{self.path}{img}")
+            shutil.copy(f"{prev_path}{img}", f"{self.path}{img}")
 
         # Add sample to target project data
         project.add_sample(self)

@@ -7,16 +7,16 @@ from tex_py_gui.browser import browser
 from tex_py_gui.capture import capture
 from tex_py_gui.settings import settings
 from kivy.lang import Builder
+
 kivy.require("2.0.0")
 
 # Load in kivy design files
 for filename in os.listdir(DirConfig.kv_dir):
     if filename.endswith(".kv"):
-        Builder.load_file(F"{DirConfig.kv_dir}{filename}")
+        Builder.load_file(f"{DirConfig.kv_dir}{filename}")
 
 
 class HomePage(Screen):
-
     def new_cap_btn(self):
         new_cap_scr = App.get_running_app().sm.get_screen("New Capture")
         new_cap_scr.set_page_refs(App.get_running_app().sm.current)
@@ -30,7 +30,6 @@ class HomePage(Screen):
 
 
 class TextileGui(App):
-
     def build(self):
 
         # Create screen namager object

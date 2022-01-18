@@ -41,7 +41,9 @@ class ProjectBrowserPage(Screen):
         dirs.sort(key=lambda d: d.name.lower())
 
         for d in dirs:
-            project = data_models.Project(json_path=F"{DirConfig.project_dir}{d.name}/{d.name}.json")
+            project = data_models.Project(
+                json_path=f"{DirConfig.project_dir}{d.name}/{d.name}.json"
+            )
             project_line = widgets.ProjectLine(project)
             project_line.bind(on_release=self.p_btn_click)
             self.ids.project_grid.add_widget(project_line)
@@ -106,10 +108,10 @@ class ProjectViewPage(Screen):
         Function called before transitioning to the project view page. Assigns
         relevant values to the screen, specific to the selected project.
         """
-        json_path = F"{DirConfig.project_dir}{p_name}/{p_name}.json"
+        json_path = f"{DirConfig.project_dir}{p_name}/{p_name}.json"
         self.project = data_models.Project(json_path=json_path)
         self.list_samples()
-        self.ids.page_title.text = F"Project {self.project.name}"
+        self.ids.page_title.text = f"Project {self.project.name}"
 
     def list_samples(self):
         """
@@ -134,13 +136,12 @@ class ProjectViewPage(Screen):
         click.
         """
         s_selection = instance.text
-        s_json_path = F"{self.project.path}{s_selection}/{s_selection}.json"
+        s_json_path = f"{self.project.path}{s_selection}/{s_selection}.json"
         sample = data_models.Sample(json_path=s_json_path)
         s_view_scr = App.get_running_app().sm.get_screen("Analysis")
 
         # Prepare analysis page for current sample
-        s_view_scr.set_page_refs(App.get_running_app().sm.current,
-                                 sample)
+        s_view_scr.set_page_refs(App.get_running_app().sm.current, sample)
         App.get_running_app().sm.transition.direction = "left"
         App.get_running_app().sm.current = "Analysis"
 
